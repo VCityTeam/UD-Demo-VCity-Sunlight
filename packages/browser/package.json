@@ -1,0 +1,16 @@
+{
+  "name": "@my_app_name/browser",
+  "version": "1.0.0",
+  "description": "This is your my_app_name browser package description",
+  "main": "./src/bootstrap.js",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "build-debug": "cross-env NODE_ENV=development webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@my_app_name/shared": "^1.0.0",
+    "@ud-viz/browser": "3.1.0"
+  }
+}

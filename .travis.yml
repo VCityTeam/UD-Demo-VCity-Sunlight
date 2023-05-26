@@ -1,0 +1,38 @@
+# @format
+os: linux
+dist: focal
+language: node_js
+node_js:
+  - 16
+
+branches:
+  only:
+    - master
+
+before_install:
+  - npm -- version
+
+install:
+  - npm install
+
+jobs:
+  include:
+    - script:
+        - npm run eslint
+      name: 'Lint code sources'
+    - script:
+        - npm run assert-code
+      name: 'Build code'
+    - script:
+        - npm audit --audit-level=low
+      name: 'Lightweight dependencies security audit'
+    - script:
+        - npm install --global remark-cli remark-validate-links
+        - remark -u validate-links .
+        - |
+          export FAILURE_THRESHOLD=0
+          export warnings=`remark -u validate-links . 2>&1 | grep warning | grep "Link to unknown" | wc -l`
+          if [ $warnings -gt $FAILURE_THRESHOLD ]; then
+            exit 1;
+          fi
+      name: 'Markdown link checks'
