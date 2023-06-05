@@ -18,6 +18,6 @@ if (DEBUG) {
 }
 
 // START YOUR APPLICATION (UNCOMMENT THESES LINES)
-// landingPage.remove();
-// const app = new MyApplication();
-// app.start();
+landingPage.remove();
+const app = new MyApplication();
+app.start();
