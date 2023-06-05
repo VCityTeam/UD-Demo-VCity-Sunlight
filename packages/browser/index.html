@@ -35,6 +35,8 @@
     </script>
 
     <script>
+      const SUN_POSITION = new THREE.Vector3(-40, 40, 0);
+
       const WIDTH = window.innerWidth;
       const HEIGHT = window.innerHeight;
 
@@ -47,7 +49,7 @@
 
       const scene = new THREE.Scene();
 
-      const camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT);
+      const camera = new THREE.PerspectiveCamera(90, WIDTH / HEIGHT);
       camera.position.z = 50;
       scene.add(camera);
 
@@ -57,11 +59,18 @@
         fragmentShader: document.getElementById('fragmentShader').textContent
       });
 
-      // Definie basic cube
+      // Define basic cube
       const boxGeometry = new THREE.BoxGeometry(10, 10, 10);
       const cube = new THREE.Mesh(boxGeometry, shaderMaterial);
-      scene.add(cube);
       cube.rotation.set(0.4, 0.2, 0);
+      scene.add(cube);
+
+      // Define sun sphere for debug purpose
+      const shereGeometry = new THREE.SphereGeometry(5, 15, 15);
+      const yellowMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+      const sun = new THREE.Mesh(shereGeometry, yellowMaterial);
+      sun.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z);
+      scene.add(sun);
 
       function render() {
         requestAnimationFrame(render);
