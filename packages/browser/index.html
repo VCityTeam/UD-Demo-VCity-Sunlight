@@ -59,7 +59,9 @@
         gl_FragColor = vec4(abs(dot(omegaI, vNormal)), 0, 0, 1.0);
 
         // Visualize all vertex normals
-        //gl_FragColor = vec4(abs(vNormal), 1.0);
+        // Convert from [-1, 1] scale to [0, 1]
+        vec3 glNormal = (vNormal + 1.0) / 2.0;
+        //gl_FragColor = vec4(glNormal, 1.0);
 
         // Visualize all vertex uvs / ids
         gl_FragColor = vec4(vId, 0, 1.0);
