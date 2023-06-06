@@ -21,16 +21,40 @@
     <!-- ============================== SHADERS ============================== -->
     <script src="https://end3r.github.io/MDN-Games-3D/Shaders/js/three.min.js"></script>
     <script id="vertexShader" type="x-shader/x-vertex">
+      varying vec3 vWorldPosition;
+      varying vec3 vNormal;
+
       void main()
       {
+        vWorldPosition = position;
+        vNormal = normal;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+10.0, position.y, position.z+5.0, 1.0);
       }
     </script>
 
     <script id="fragmentShader" type="x-shader/x-fragment">
+      uniform vec3 sunWorldPosition;
+
+      // World position isn't affected by the camera view
+      // Same origin as the sun position
+      varying vec3 vWorldPosition;
+      varying vec3 vNormal;
+
       void main()
       {
-        gl_FragColor = vec4(1.0, 0, 0, 1.0);
+        // Adapt color to light direction (basic "shading")
+        vec3 directionToLight = sunWorldPosition - vWorldPosition;
+        vec3 omegaI = normalize(directionToLight);
+
+        // Visualize if light direction and vertex normal are in opposite direction
+        // Black : same direction (fragment in the shadow)
+        // Red : opposite direction (fragment face the sun)
+        gl_FragColor = vec4(abs(dot(omegaI, vNormal)), 0, 0, 1.0);
+
+        // Visualize all vertex normals
+        //gl_FragColor = vec4(abs(vNormal), 1.0);
+
+        //gl_FragColor = vec4(1.0, 0, 0, 1.0);
       }
     </script>
 
@@ -55,6 +79,9 @@
 
       // Bind shaders material
       const shaderMaterial = new THREE.ShaderMaterial({
+        uniforms: {
+          sunWorldPosition: { type: 'v3', value: SUN_POSITION }
+        },
         vertexShader: document.getElementById('vertexShader').textContent,
         fragmentShader: document.getElementById('fragmentShader').textContent
       });
