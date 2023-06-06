@@ -23,12 +23,18 @@
     <script id="vertexShader" type="x-shader/x-vertex">
       varying vec3 vWorldPosition;
       varying vec3 vNormal;
+      varying vec2 vId;
 
       void main()
       {
         vWorldPosition = position;
         vNormal = normal;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+10.0, position.y, position.z+5.0, 1.0);
+        vId = uv;
+
+        //gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+10.0, position.y, position.z+5.0, 1.0);
+
+        // Create output texture using uv index
+        gl_Position = vec4(uv, 0, 1) - vec4(.5, .5, 0, 0);
       }
     </script>
 
@@ -39,6 +45,7 @@
       // Same origin as the sun position
       varying vec3 vWorldPosition;
       varying vec3 vNormal;
+      varying vec2 vId;
 
       void main()
       {
@@ -54,7 +61,8 @@
         // Visualize all vertex normals
         //gl_FragColor = vec4(abs(vNormal), 1.0);
 
-        //gl_FragColor = vec4(1.0, 0, 0, 1.0);
+        // Visualize all vertex uvs / ids
+        gl_FragColor = vec4(vId, 0, 1.0);
       }
     </script>
 
