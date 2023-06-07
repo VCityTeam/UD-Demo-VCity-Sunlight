@@ -31,10 +31,10 @@
         vNormal = normal;
         vId = uv;
 
-        //gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+10.0, position.y, position.z+5.0, 1.0);
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x+10.0, position.y, position.z+5.0, 1.0);
 
         // Create output texture using uv index
-        gl_Position = vec4(uv, 0, 1) - vec4(.5, .5, 0, 0);
+        //gl_Position = vec4(uv, 0, 1) - vec4(.5, .5, 0, 0);
       }
     </script>
 
@@ -64,7 +64,9 @@
         //gl_FragColor = vec4(glNormal, 1.0);
 
         // Visualize all vertex uvs / ids
-        gl_FragColor = vec4(vId, 0, 1.0);
+        //gl_FragColor = vec4(vId, 0, 1.0);
+
+        gl_FragColor = vec4(vWorldPosition, 1.0);
       }
     </script>
 
@@ -73,6 +75,9 @@
 
       const WIDTH = window.innerWidth;
       const HEIGHT = window.innerHeight;
+
+      // Create the texture that will store our result
+      const rendererTarget = new THREE.WebGLRenderTarget(WIDTH, HEIGHT);
 
       // Define Canvas size / Color
       // antialias to perform antialiasing
@@ -108,12 +113,26 @@
       const sun = new THREE.Mesh(shereGeometry, yellowMaterial);
       sun.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z);
       scene.add(sun);
+      const realScene = new THREE.Scene();
 
       function render() {
         requestAnimationFrame(render);
-        renderer.render(scene, camera);
+        renderer.render(scene, camera, rendererTarget);
+        renderer.render(realScene, camera);
       }
       render();
+
+      const texture = rendererTarget.texture;
+      console.log(texture);
+
+      const textureMaterial = new THREE.MeshBasicMaterial({
+        map: rendererTarget.texture
+      });
+
+      const planeGeometry = new THREE.PlaneGeometry(200, 100);
+      const planeMesh = new THREE.Mesh(planeGeometry, textureMaterial);
+      planeMesh.position.set(0, 0, 20);
+      realScene.add(planeMesh);
     </script>
   </body>
 </html>
