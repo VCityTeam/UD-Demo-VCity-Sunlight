@@ -24,10 +24,10 @@ export class MyApplication {
     /** Extent Code: https://github.com/search?q=repo%3AiTowns%2Fitowns+path%3A%2FExtent.js&type=code */
     const configExtent = {
       crs: 'EPSG:3946',
-      west: 1839800,
-      east: 1844000,
-      south: 5175000,
-      north: 5178000,
+      west: 1837860.980127206,
+      east: 1851647,
+      south: 5169347.4265999,
+      north: 5180575,
     };
 
     proj4.default.defs(
