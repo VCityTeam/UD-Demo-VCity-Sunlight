@@ -61,8 +61,8 @@ export class MyApplication {
     // /// ADD 3D LAYERS
     const config3DTiles = [
       {
-        id: 'Lyon-1',
-        url: 'https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-1_2015/tileset.json',
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
       },
     ];

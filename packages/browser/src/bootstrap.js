@@ -3,7 +3,7 @@
 // eslint-disable-next-line no-unused-vars
 import { MyApplication } from './MyApplication';
 import { landingPage } from './landingPage';
-
+import { itowns } from '@ud-viz/browser';
 import '../style.css';
 
 // CREATE DOM ELEMENT
@@ -21,3 +21,20 @@ if (DEBUG) {
 landingPage.remove();
 const app = new MyApplication();
 app.start();
+
+// Update style based on batch table Sunlight result.
+const myStyle = new itowns.Style({
+  fill: {
+    color: function (feature) {
+      return feature.getInfo().batchTable.bLighted ? 'yellow' : 'black';
+    },
+  },
+});
+
+// Apply style to layers
+app.frame3DPlanar.itownsView
+  .getLayers()
+  .filter((el) => el.isC3DTilesLayer)
+  .forEach((layer) => {
+    layer.style = myStyle;
+  });
