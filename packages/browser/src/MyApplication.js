@@ -58,7 +58,7 @@ export class MyApplication {
   }
 
   init3DTiles() {
-    // /// ADD 3D LAYERS
+    // ADD 3D LAYERS
     const config3DTiles = [
       {
         id: 'Hotel-Police',
@@ -77,4 +77,6 @@ export class MyApplication {
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
+
+  applyLightStyle() {}
 }
