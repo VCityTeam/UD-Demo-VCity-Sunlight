@@ -85,6 +85,7 @@ export class MyApplication {
 
   /**
    * Update style based on batch table and Sunlight result.
+   * Red : feature is currently selected.
    * Yellow : feature is in the light.
    * Black : feature is in the shadow.
    */
@@ -146,16 +147,17 @@ export class MyApplication {
       const featureClicked =
         intersects[0].layer.getC3DTileFeatureFromIntersectsArray(intersects);
       if (featureClicked) {
-        featureClicked.userData.isSelected = true;
-
-        // Update layer to display current selection
-        intersects[0].layer.updateStyle();
-
         this.currentSelection.feature = featureClicked;
         this.currentSelection.layer = intersects[0].layer;
-        // console.log(featureClicked.getInfo().batchTable.id);
+
+        // Update layer to display current selection
+        this.currentSelection.feature.userData.isSelected = true;
+        this.currentSelection.layer.updateStyle();
       }
     }
+
+    // Redraw the current view
+    this.frame3DPlanar.itownsView.notifyChange();
   }
 
   /**
