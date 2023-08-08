@@ -21,29 +21,3 @@ if (DEBUG) {
 landingPage.remove();
 const app = new MyApplication();
 app.start();
-
-/**
- * Update style based on batch table and Sunlight result.
- * Yellow : feature is in the light.
- * Black : feature is in the shadow.
- */
-function applyLightStyle() {
-  // .
-  const myStyle = new itowns.Style({
-    fill: {
-      color: function (feature) {
-        return feature.getInfo().batchTable.bLighted ? 'yellow' : 'black';
-      },
-    },
-  });
-
-  // Apply style to layers
-  app.frame3DPlanar.itownsView
-    .getLayers()
-    .filter((el) => el.isC3DTilesLayer)
-    .forEach((layer) => {
-      layer.style = myStyle;
-    });
-}
-
-applyLightStyle();

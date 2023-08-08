@@ -18,6 +18,7 @@ export class MyApplication {
     this.initFrame3D();
     this.init3DTiles();
     this.initUI();
+    this.applyLightStyle();
   }
 
   initItownsExtent() {
@@ -78,5 +79,26 @@ export class MyApplication {
     this.frame3DPlanar.appendToUI(this.domElement);
   }
 
-  applyLightStyle() {}
+  /**
+   * Update style based on batch table and Sunlight result.
+   * Yellow : feature is in the light.
+   * Black : feature is in the shadow.
+   */
+  applyLightStyle() {
+    const myStyle = new itowns.Style({
+      fill: {
+        color: function (feature) {
+          return feature.getInfo().batchTable.bLighted ? 'yellow' : 'black';
+        },
+      },
+    });
+
+    // Apply style to layers
+    this.frame3DPlanar.itownsView
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        layer.style = myStyle;
+      });
+  }
 }
