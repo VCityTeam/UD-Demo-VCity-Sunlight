@@ -5,34 +5,26 @@ body {
 
 /* ============================== Selection Widget ============================== */
 #widgets-3dtiles {
-  position: relative;
+  position: fixed;
   z-index: 2;
-  background-color: #313336bb;
   width: fit-content;
-  color: white;
 }
 
-.widgets-3dtiles-layer-container {
-  display: flex;
-}
-
-.widgets-3dtiles-layer-container * {
-  padding-right: 5px;
-  padding-left: 2px;
-  cursor: pointer;
-}
-
-.widgets-3dtiles-url-container {
-  padding: 5px;
-  border: 1px solid;
-}
-
-.widgets-3dtiles-url-container input {
-  border-radius: 20px;
-  margin: 5px;
+/* Hide C3Dtiles block not useful for Sunlight */
+/* FIXME Ask MLI if I create another widget with the same code as displayC3DTFeatureInfo ? */
+.widgets-3dtiles-url-container,
+.widgets-3dtiles-url-container + div {
+  display: none;
 }
 
 .widgets-3dtiles-feature-container {
-  border: 1px solid;
-  padding: 5px;
+  padding: 10px;
+}
+
+.top-widget {
+  top: 0;
+}
+
+.right-widget {
+  right: 0;
 }
