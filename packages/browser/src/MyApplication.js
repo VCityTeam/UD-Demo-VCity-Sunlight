@@ -11,6 +11,9 @@ export class MyApplication {
     this.frame3DPlanar = null;
 
     this.domElement = document.createElement('div');
+
+    // Add Layer infos to update style only on one layer
+    this.currentSelection = { feature: null, layer: null };
   }
 
   start() {
@@ -19,6 +22,7 @@ export class MyApplication {
     this.init3DTiles();
     this.initUI();
     this.applyLightStyle();
+    this.registerToSelectionEvents();
   }
 
   initItownsExtent() {
@@ -88,7 +92,12 @@ export class MyApplication {
     const myStyle = new itowns.Style({
       fill: {
         color: function (feature) {
-          return feature.getInfo().batchTable.bLighted ? 'yellow' : 'black';
+          if (feature.userData.selectedColor)
+            return feature.userData.selectedColor;
+
+          if (feature.getInfo().batchTable.bLighted) return 'yellow';
+
+          return 'black';
         },
       },
     });
@@ -101,4 +110,60 @@ export class MyApplication {
         layer.style = myStyle;
       });
   }
+
+  updateSelection(event) {
+    if (this.currentSelection.feature) {
+      // reset feature userData
+      this.currentSelection.feature.userData.selectedColor = null;
+      // and update style of its layer
+      this.currentSelection.layer.updateStyle();
+      // reset context selection
+      this.currentSelection.feature = null;
+      this.currentSelection.layer = null;
+    }
+    // get intersects based on the click event
+    const intersects = this.frame3DPlanar.itownsView.pickObjectsAt(
+      event,
+      0,
+      this.frame3DPlanar.itownsView
+        .getLayers()
+        .filter((el) => el.isC3DTilesLayer)
+    );
+    if (intersects.length) {
+      // get featureClicked
+      const featureClicked =
+        intersects[0].layer.getC3DTileFeatureFromIntersectsArray(intersects);
+      if (featureClicked) {
+        // write in userData the selectedColor
+        featureClicked.userData.selectedColor = 'red';
+        // and update its style layer
+        intersects[0].layer.updateStyle();
+        // set currentSelection
+        this.currentSelection.feature = featureClicked;
+        this.currentSelection.layer = intersects[0].layer;
+        // console.log(featureClicked.getInfo().batchTable.id);
+      }
+    }
+  }
+
+  registerToSelectionEvents() {
+    console.log('initialize');
+    console.log(this.frame3DPlanar.getScene());
+    this.frame3DPlanar.getRootWebGL().onclick = (event) =>
+      this.updateSelection(event);
+
+    // this.domElement.onclick = (event) => {
+
+    //   // // update widget displayed info
+    //   // widget.displayC3DTFeatureInfo(
+    //   //   currentSelection.feature,
+    //   //   currentSelection.layer
+    //   // );
+    // };
+  }
+
+  // showBatchTable(event)
+  // {
+
+  // }
 }
