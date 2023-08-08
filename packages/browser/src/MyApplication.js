@@ -3,6 +3,7 @@ import {
   add3DTilesLayers,
   itowns,
   proj4,
+  Widget,
 } from '@ud-viz/browser';
 
 export class MyApplication {
@@ -14,6 +15,8 @@ export class MyApplication {
 
     // Add Layer infos to update style only on one layer
     this.currentSelection = { feature: null, layer: null };
+
+    this.selectionWidget = null;
   }
 
   start() {
@@ -72,13 +75,19 @@ export class MyApplication {
       },
     ];
 
-    add3DTilesLayers(config3DTiles, this.frame3DPlanar.itownsView);
+    add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
   }
 
   initUI() {
-    const label = document.createElement('h1');
-    label.textContent = 'Hello application !';
-    this.domElement.appendChild(label);
+    // Add selection widget
+    this.selectionWidget = new Widget.C3DTiles(this.frame3DPlanar.itownsView, {
+      overrideStyle: new itowns.Style({ fill: { color: 'white' } }),
+      parentElement: this.domElement,
+      layerContainerClassName: 'widgets-3dtiles-layer-container',
+      c3DTFeatureInfoContainerClassName: 'widgets-3dtiles-feature-container',
+      urlContainerClassName: 'widgets-3dtiles-url-container',
+    });
+    this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
@@ -103,7 +112,8 @@ export class MyApplication {
     });
 
     // Apply style to layers
-    this.frame3DPlanar.itownsView
+    this.frame3DPlanar
+      .getItownsView()
       .getLayers()
       .filter((el) => el.isC3DTilesLayer)
       .forEach((layer) => {
@@ -135,10 +145,11 @@ export class MyApplication {
     this.resetSelection();
 
     // get intersects based on the click event
-    const intersects = this.frame3DPlanar.itownsView.pickObjectsAt(
+    const intersects = this.frame3DPlanar.getItownsView().pickObjectsAt(
       event,
       0,
-      this.frame3DPlanar.itownsView
+      this.frame3DPlanar
+        .getItownsView()
         .getLayers()
         .filter((el) => el.isC3DTilesLayer)
     );
@@ -156,8 +167,14 @@ export class MyApplication {
       }
     }
 
+    // Update widget displayed info
+    this.selectionWidget.displayC3DTFeatureInfo(
+      this.currentSelection.feature,
+      this.currentSelection.layer
+    );
+
     // Redraw the current view
-    this.frame3DPlanar.itownsView.notifyChange();
+    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   /**
