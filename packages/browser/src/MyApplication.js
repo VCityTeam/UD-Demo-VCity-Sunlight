@@ -18,6 +18,7 @@ export class MyApplication {
     this.initFrame3D();
     this.init3DTiles();
     this.initUI();
+    this.applyLightStyle();
   }
 
   initItownsExtent() {
@@ -58,11 +59,11 @@ export class MyApplication {
   }
 
   init3DTiles() {
-    // /// ADD 3D LAYERS
+    // ADD 3D LAYERS
     const config3DTiles = [
       {
-        id: 'Lyon-1',
-        url: 'https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2015/Lyon-1_2015/tileset.json',
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
       },
     ];
@@ -76,5 +77,28 @@ export class MyApplication {
     this.domElement.appendChild(label);
 
     this.frame3DPlanar.appendToUI(this.domElement);
+  }
+
+  /**
+   * Update style based on batch table and Sunlight result.
+   * Yellow : feature is in the light.
+   * Black : feature is in the shadow.
+   */
+  applyLightStyle() {
+    const myStyle = new itowns.Style({
+      fill: {
+        color: function (feature) {
+          return feature.getInfo().batchTable.bLighted ? 'yellow' : 'black';
+        },
+      },
+    });
+
+    // Apply style to layers
+    this.frame3DPlanar.itownsView
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        layer.style = myStyle;
+      });
   }
 }

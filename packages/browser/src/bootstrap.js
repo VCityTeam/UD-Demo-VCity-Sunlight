@@ -3,7 +3,7 @@
 // eslint-disable-next-line no-unused-vars
 import { MyApplication } from './MyApplication';
 import { landingPage } from './landingPage';
-
+import { itowns } from '@ud-viz/browser';
 import '../style.css';
 
 // CREATE DOM ELEMENT
