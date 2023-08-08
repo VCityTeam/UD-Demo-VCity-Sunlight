@@ -110,6 +110,9 @@ export class MyApplication {
       });
   }
 
+  /**
+   * Reset and dispose current selection
+   */
   resetSelection() {
     if (this.currentSelection.feature) {
       // reset feature userData
@@ -122,6 +125,11 @@ export class MyApplication {
     }
   }
 
+  /**
+   * Set the current feature and layer selected by the user.
+   *
+   * @param event
+   */
   updateSelection(event) {
     this.resetSelection();
 
@@ -150,24 +158,11 @@ export class MyApplication {
     }
   }
 
+  /**
+   * Register to all selection events from the user (feature selected, timelapse played...).
+   */
   registerToSelectionEvents() {
-    console.log('initialize');
-    console.log(this.frame3DPlanar.getScene());
     this.frame3DPlanar.getRootWebGL().onclick = (event) =>
       this.updateSelection(event);
-
-    // this.domElement.onclick = (event) => {
-
-    //   // // update widget displayed info
-    //   // widget.displayC3DTFeatureInfo(
-    //   //   currentSelection.feature,
-    //   //   currentSelection.layer
-    //   // );
-    // };
   }
-
-  // showBatchTable(event)
-  // {
-
-  // }
 }
