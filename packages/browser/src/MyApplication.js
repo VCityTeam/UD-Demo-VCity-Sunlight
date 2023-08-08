@@ -92,8 +92,7 @@ export class MyApplication {
     const myStyle = new itowns.Style({
       fill: {
         color: function (feature) {
-          if (feature.userData.selectedColor)
-            return feature.userData.selectedColor;
+          if (feature.userData.isSelected) return 'red';
 
           if (feature.getInfo().batchTable.bLighted) return 'yellow';
 
@@ -111,16 +110,21 @@ export class MyApplication {
       });
   }
 
-  updateSelection(event) {
+  resetSelection() {
     if (this.currentSelection.feature) {
       // reset feature userData
-      this.currentSelection.feature.userData.selectedColor = null;
+      this.currentSelection.feature.userData.isSelected = false;
       // and update style of its layer
       this.currentSelection.layer.updateStyle();
       // reset context selection
       this.currentSelection.feature = null;
       this.currentSelection.layer = null;
     }
+  }
+
+  updateSelection(event) {
+    this.resetSelection();
+
     // get intersects based on the click event
     const intersects = this.frame3DPlanar.itownsView.pickObjectsAt(
       event,
@@ -134,11 +138,11 @@ export class MyApplication {
       const featureClicked =
         intersects[0].layer.getC3DTileFeatureFromIntersectsArray(intersects);
       if (featureClicked) {
-        // write in userData the selectedColor
-        featureClicked.userData.selectedColor = 'red';
-        // and update its style layer
+        featureClicked.userData.isSelected = true;
+
+        // Update layer to display current selection
         intersects[0].layer.updateStyle();
-        // set currentSelection
+
         this.currentSelection.feature = featureClicked;
         this.currentSelection.layer = intersects[0].layer;
         // console.log(featureClicked.getInfo().batchTable.id);
