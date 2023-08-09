@@ -44,7 +44,10 @@ export class CarouselRadio extends itownsWidgets.Widget {
    * @param {Event} event
    */
   onRadioClick(event) {
-    console.log(event.currentTarget);
-    console.log(event.currentTarget.getAttribute('value'));
+    const value = event.currentTarget.getAttribute('value');
+
+    // Custom event gathering all radios click event
+    const onSelectEvent = new CustomEvent('onselect', { detail: value });
+    document.dispatchEvent(onSelectEvent);
   }
 }

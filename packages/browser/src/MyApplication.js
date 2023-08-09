@@ -111,6 +111,10 @@ export class MyApplication {
       }
     );
 
+    document.addEventListener('onselect', function (event) {
+      console.log("Received custom event 'myEvent' with value:", event.detail);
+    });
+
     this.frame3DPlanar.appendToUI(this.domElement);
   }
 
