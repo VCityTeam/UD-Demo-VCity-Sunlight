@@ -32,7 +32,9 @@ export class CarouselRadio extends itownsWidgets.Widget {
 
       labelInput.input.setAttribute('value', index);
       labelInput.input.setAttribute('name', groupName);
-      labelInput.input.addEventListener('click', this.onRadioClick);
+      labelInput.input.addEventListener('click', (event) =>
+        this.onRadioClick(event)
+      );
 
       this.radioContainer.appendChild(labelInput.parent);
     });
@@ -48,6 +50,6 @@ export class CarouselRadio extends itownsWidgets.Widget {
 
     // Custom event gathering all radios click event
     const onSelectEvent = new CustomEvent('onselect', { detail: value });
-    document.dispatchEvent(onSelectEvent);
+    this.radioContainer.dispatchEvent(onSelectEvent);
   }
 }

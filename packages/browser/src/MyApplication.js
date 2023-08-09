@@ -23,6 +23,7 @@ export class MyApplication {
     };
 
     this.selectionWidget = null;
+    this.timeline = null;
   }
 
   start() {
@@ -134,13 +135,10 @@ export class MyApplication {
     dates['../assets/Hotel-Police/2016-01-01__0800/tileset.json'] = '08h';
     const jsonDates = JSON.stringify(dates);
 
-    const timelapseRadios = new CarouselRadio(
-      this.frame3DPlanar.getItownsView(),
-      {
-        parentElement: this.domElement,
-        radiosValues: jsonDates,
-      }
-    );
+    this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
+      parentElement: this.domElement,
+      radiosValues: jsonDates,
+    });
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
@@ -287,7 +285,7 @@ export class MyApplication {
       .getRootWebGL()
       .addEventListener('onclick', (event) => this.updateSelection(event));
 
-    document.addEventListener('onselect', (event) => {
+    this.timeline.radioContainer.addEventListener('onselect', (event) => {
       this.replace3DTiles(event.detail);
     });
   }
