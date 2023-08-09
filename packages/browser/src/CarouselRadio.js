@@ -65,6 +65,14 @@ export class CarouselRadio extends itownsWidgets.Widget {
     nextButton.innerText = 'Next';
     nextButton.addEventListener('click', (event) => this.next());
     this.domElement.appendChild(nextButton);
+
+    // Create play button
+    const playButton = document.createElement('button');
+    playButton.innerText = 'Play';
+    playButton.addEventListener('click', (event) =>
+      setInterval(this.autoPlay, 2000)
+    );
+    this.domElement.appendChild(playButton);
   }
 
   /**
@@ -106,6 +114,10 @@ export class CarouselRadio extends itownsWidgets.Widget {
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
     this.setChoice(selectionIndex);
+  }
+
+  autoPlay() {
+    this.next();
   }
 
   /**
