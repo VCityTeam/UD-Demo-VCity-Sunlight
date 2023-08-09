@@ -14,7 +14,11 @@ export class MyApplication {
     this.domElement = document.createElement('div');
 
     // Add Layer infos to update style only on one layer
-    this.currentSelection = { feature: null, layer: null };
+    this.currentSelection = {
+      feature: null,
+      occultingFeature: null,
+      layer: null,
+    };
 
     this.selectionWidget = null;
   }
@@ -93,8 +97,10 @@ export class MyApplication {
   }
 
   /**
+   *
    * Update style based on batch table and Sunlight result.
-   * Red : feature is currently selected.
+   * Blue : feature is currently selected.
+   * Red : feature is occulting the feature selected.
    * Yellow : feature is in the light.
    * Black : feature is in the shadow.
    */
@@ -102,7 +108,8 @@ export class MyApplication {
     const myStyle = new itowns.Style({
       fill: {
         color: function (feature) {
-          if (feature.userData.isSelected) return 'red';
+          if (feature.userData.isSelected) return 'blue';
+          if (feature.userData.isOcculting) return 'red';
 
           if (feature.getInfo().batchTable.bLighted) return 'yellow';
 
@@ -133,7 +140,43 @@ export class MyApplication {
       // reset context selection
       this.currentSelection.feature = null;
       this.currentSelection.layer = null;
+
+      // Reset occulting feature state
+      if (this.currentSelection.occultingFeature)
+        this.currentSelection.occultingFeature.userData.isOcculting = false;
+
+      this.currentSelection.occultingFeature = null;
     }
+  }
+
+  /**
+   * Get feature from the occulting id.
+   * An occulting id follow these format : 'Tile-tiles/0.b3dm__Feature-0__Triangle-823'
+   *
+   * @param {C3DTilesLayer} layer 3DTiles layer containing all features.
+   * @param {string} occultingId Occulting id use to search an element.
+   * @returns Feature present in the layer.
+   */
+  getFeatureByOccultingId(layer, occultingId) {
+    // Check if the input string matches the expected format
+    const formatRegex = /^Tile-tiles\/\d+\.b3dm__Feature-\d+__Triangle-\d+$/;
+    if (!formatRegex.test(occultingId)) {
+      console.log(
+        'Occulting id does not follow the expected format : ' + occultingId
+      );
+      return null;
+    }
+
+    // Extract the number before "b3dm"
+    let tileIndex = occultingId.match(/(\d+)\.b3dm/);
+    // +1 because itowns tiles start at 1
+    tileIndex = parseInt(tileIndex[1] + 1);
+
+    // Extract the last number in the string
+    let featureId = occultingId.match(/(\d+)$/);
+    featureId = parseInt(featureId[1]);
+
+    return layer.tilesC3DTileFeatures.get(tileIndex).get(featureId);
   }
 
   /**
@@ -160,6 +203,16 @@ export class MyApplication {
       if (featureClicked) {
         this.currentSelection.feature = featureClicked;
         this.currentSelection.layer = intersects[0].layer;
+
+        // Change occulting feature state to display information about it
+        if (!featureClicked.getInfo().batchTable.bLighted) {
+          this.currentSelection.occultingFeature = this.getFeatureByOccultingId(
+            this.currentSelection.layer,
+            this.currentSelection.feature.getInfo().batchTable.blockerId
+          );
+
+          this.currentSelection.occultingFeature.userData.isOcculting = true;
+        }
 
         // Update layer to display current selection
         this.currentSelection.feature.userData.isSelected = true;
