@@ -30,7 +30,7 @@ body {
 }
 
 /* ============================== Carousel Widget ============================== */
-.carousel-radios-container {
+.carousel-container {
   z-index: 2;
   position: absolute;
   bottom: 0;
@@ -39,4 +39,11 @@ body {
   justify-content: space-evenly;
   align-items: center;
   padding: 15px 0;
+}
+
+.carousel-radios-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 50%;
 }

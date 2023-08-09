@@ -125,24 +125,6 @@ export class MyApplication {
     ];
   }
 
-  /**
-   * Get 3DTiles layer config for a given url.
-   *
-   * @param {string} url - Tileset path or url
-   * @returns Config 3DTiles layer
-   */
-  getConfig3DTilesByUrl(url) {
-    const config3DTiles = this.getConfig3DTiles();
-
-    for (let i = 0; i < config3DTiles.length; i++) {
-      const element = config3DTiles[i];
-
-      if (element.url === url) {
-        return element;
-      }
-    }
-  }
-
   init3DTiles() {
     // ADD 3D LAYERS
     const config3DTiles = this.getConfig3DTiles();
@@ -186,10 +168,10 @@ export class MyApplication {
     // Add timelapse radios
 
     // Sample datas only for testing purpose.
-    const dates = new Map();
+    const dates = [];
     const config3DTiles = this.getConfig3DTiles();
-    config3DTiles.forEach((element) => {
-      dates[element.url] = element.date;
+    config3DTiles.forEach((element, index) => {
+      dates.push(element.date);
     });
     const jsonDates = JSON.stringify(dates);
 
@@ -343,12 +325,10 @@ export class MyApplication {
       .getRootWebGL()
       .addEventListener('onclick', (event) => this.updateSelection(event));
 
+    // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      const config3DTile = this.getConfig3DTilesByUrl(event.detail);
-
-      if (config3DTile) {
-        this.replace3DTiles([config3DTile]);
-      }
+      const config3DTile = this.getConfig3DTiles()[event.detail];
+      this.replace3DTiles([config3DTile]);
     });
   }
 }
