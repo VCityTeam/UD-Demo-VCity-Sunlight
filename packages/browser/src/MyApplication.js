@@ -6,6 +6,8 @@ import {
   Widget,
 } from '@ud-viz/browser';
 
+import { CarouselRadio } from './CarouselRadio';
+
 export class MyApplication {
   constructor() {
     this.extent = null;
@@ -93,6 +95,22 @@ export class MyApplication {
     });
     this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
 
+    // Add timelapse radios
+
+    // Sample datas only for testing purpose.
+    const dates = new Map();
+    dates[new Date().toISOString()] = 'First';
+    dates[new Date().getTime() + 60000] = 'Second';
+    const jsonDates = JSON.stringify(dates);
+
+    const timelapseRadios = new CarouselRadio(
+      this.frame3DPlanar.getItownsView(),
+      {
+        parentElement: this.domElement,
+        radiosValues: jsonDates,
+      }
+    );
+
     this.frame3DPlanar.appendToUI(this.domElement);
   }
 
@@ -153,7 +171,7 @@ export class MyApplication {
    * Get feature from the occulting id.
    * An occulting id follow these format : 'Tile-tiles/0.b3dm__Feature-0__Triangle-823'
    *
-   * @param {C3DTilesLayer} layer 3DTiles layer containing all features.
+   * @param {itowns.C3DTilesLayer} layer 3DTiles layer containing all features.
    * @param {string} occultingId Occulting id use to search an element.
    * @returns Feature present in the layer.
    */
