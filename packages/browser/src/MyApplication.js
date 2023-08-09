@@ -84,6 +84,37 @@ export class MyApplication {
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
   }
 
+  /**
+   * Replace old 3d tiles by new 3DTiles after the date changed.
+   *
+   * @param {string} newUrl - 3DTiles path (local or url)
+   */
+  replace3DTiles(newUrl) {
+    // Remove previous 3DTiles because we change the timestamp
+    this.frame3DPlanar
+      .getItownsView()
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        this.frame3DPlanar.getItownsView().removeLayer(layer.id);
+      });
+
+    // ADD 3D LAYERS
+    const config3DTiles = [
+      {
+        id: 'Hotel-Police',
+        url: newUrl,
+        color: '0xFFFFFF',
+      },
+    ];
+
+    add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
+
+    // Apply light style on new 3DTiles
+    this.applyLightStyle();
+    this.frame3DPlanar.getItownsView().notifyChange();
+  }
+
   initUI() {
     // Add selection widget
     this.selectionWidget = new Widget.C3DTiles(this.frame3DPlanar.itownsView, {
@@ -99,8 +130,8 @@ export class MyApplication {
 
     // Sample datas only for testing purpose.
     const dates = new Map();
-    dates[new Date().toISOString()] = 'First';
-    dates[new Date().getTime() + 60000] = 'Second';
+    dates['../assets/Hotel-Police/2016-01-01__1400/tileset.json'] = '14h';
+    dates['../assets/Hotel-Police/2016-01-01__0800/tileset.json'] = '08h';
     const jsonDates = JSON.stringify(dates);
 
     const timelapseRadios = new CarouselRadio(
@@ -110,10 +141,6 @@ export class MyApplication {
         radiosValues: jsonDates,
       }
     );
-
-    document.addEventListener('onselect', function (event) {
-      console.log("Received custom event 'myEvent' with value:", event.detail);
-    });
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
@@ -256,7 +283,12 @@ export class MyApplication {
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
   registerToSelectionEvents() {
-    this.frame3DPlanar.getRootWebGL().onclick = (event) =>
-      this.updateSelection(event);
+    this.frame3DPlanar
+      .getRootWebGL()
+      .addEventListener('onclick', (event) => this.updateSelection(event));
+
+    document.addEventListener('onselect', (event) => {
+      this.replace3DTiles(event.detail);
+    });
   }
 }

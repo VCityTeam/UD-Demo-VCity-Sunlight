@@ -3,10 +3,6 @@ body {
   overflow: hidden;
 }
 
-.ui_Frame3DBase {
-  z-index: 2;
-}
-
 /* ============================== Selection Widget ============================== */
 #widgets-3dtiles {
   position: fixed;
@@ -35,6 +31,7 @@ body {
 
 /* ============================== Carousel Widget ============================== */
 .carousel-radios-container {
+  z-index: 2;
   position: absolute;
   bottom: 0;
   width: 100%;
