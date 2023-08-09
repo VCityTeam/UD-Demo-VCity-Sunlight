@@ -72,25 +72,90 @@ export class MyApplication {
     this.frame3DPlanar = new Frame3DPlanar(this.extent, configFrame3D);
   }
 
-  init3DTiles() {
-    // ADD 3D LAYERS
-    const config3DTiles = [
+  /**
+   * Get all 3dTiles for several timestamp. Each element corresponds to
+   * a sunlight result at a given timestamp.
+   *
+   * @returns Config array of 3DTiles
+   */
+  getConfig3DTiles() {
+    return [
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
+        color: '0xFFFFFF',
+        date: '08H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__0900/tileset.json',
+        color: '0xFFFFFF',
+        date: '09H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1000/tileset.json',
+        color: '0xFFFFFF',
+        date: '10H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1100/tileset.json',
+        color: '0xFFFFFF',
+        date: '11H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1200/tileset.json',
+        color: '0xFFFFFF',
+        date: '12H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1300/tileset.json',
+        color: '0xFFFFFF',
+        date: '13H',
+      },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
+        date: '14H',
       },
     ];
+  }
 
-    add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
+  /**
+   * Get 3DTiles layer config for a given url.
+   *
+   * @param {string} url - Tileset path or url
+   * @returns Config 3DTiles layer
+   */
+  getConfig3DTilesByUrl(url) {
+    const config3DTiles = this.getConfig3DTiles();
+
+    for (let i = 0; i < config3DTiles.length; i++) {
+      const element = config3DTiles[i];
+
+      if (element.url === url) {
+        return element;
+      }
+    }
+  }
+
+  init3DTiles() {
+    // ADD 3D LAYERS
+    const config3DTiles = this.getConfig3DTiles();
+
+    add3DTilesLayers([config3DTiles[0]], this.frame3DPlanar.getItownsView());
   }
 
   /**
    * Replace old 3d tiles by new 3DTiles after the date changed.
    *
-   * @param {string} newUrl - 3DTiles path (local or url)
+   * @param {config3DTilesLayers} config3DTiles - An object containing 3DTiles layers configs
    */
-  replace3DTiles(newUrl) {
+  replace3DTiles(config3DTiles) {
     // Remove previous 3DTiles because we change the timestamp
     this.frame3DPlanar
       .getItownsView()
@@ -99,15 +164,6 @@ export class MyApplication {
       .forEach((layer) => {
         this.frame3DPlanar.getItownsView().removeLayer(layer.id);
       });
-
-    // ADD 3D LAYERS
-    const config3DTiles = [
-      {
-        id: 'Hotel-Police',
-        url: newUrl,
-        color: '0xFFFFFF',
-      },
-    ];
 
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
 
@@ -131,8 +187,10 @@ export class MyApplication {
 
     // Sample datas only for testing purpose.
     const dates = new Map();
-    dates['../assets/Hotel-Police/2016-01-01__1400/tileset.json'] = '14h';
-    dates['../assets/Hotel-Police/2016-01-01__0800/tileset.json'] = '08h';
+    const config3DTiles = this.getConfig3DTiles();
+    config3DTiles.forEach((element) => {
+      dates[element.url] = element.date;
+    });
     const jsonDates = JSON.stringify(dates);
 
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
@@ -286,7 +344,11 @@ export class MyApplication {
       .addEventListener('onclick', (event) => this.updateSelection(event));
 
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      this.replace3DTiles(event.detail);
+      const config3DTile = this.getConfig3DTilesByUrl(event.detail);
+
+      if (config3DTile) {
+        this.replace3DTiles([config3DTile]);
+      }
     });
   }
 }
