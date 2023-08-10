@@ -9,6 +9,7 @@
     - [Installation](#installation)
   - [Usage](#usage)
   - [Contributing](#contributing)
+  - [License](#license)
   - [Contact](#contact)
   - [Acknowledgments](#acknowledgments)
 
@@ -62,6 +63,10 @@ Use [UD-Viz developers documention](https://github.com/VCityTeam/UD-Viz/blob/mas
 ## Contributing
 
 Follow the guidelines of [UD-Viz developpers](https://github.com/VCityTeam/UD-Viz/blob/master/docs/static/Developers.md#developers).
+
+## License
+
+Distributed under the LGPL-2.1 License. See `LICENSE` for more information.
 
 ## Contact
 
