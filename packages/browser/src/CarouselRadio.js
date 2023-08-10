@@ -5,7 +5,7 @@ const DEFAULT_OPTIONS = {
 };
 
 /**
- * Clamp a value between a min and max
+ * Clamp a value between a min and max.
  *
  * @param value
  * @param min
@@ -17,7 +17,7 @@ function clamp(value, min, max) {
 }
 
 /**
- * Carousel radios that allows navigation on a long list of radios
+ * Carousel radios that allows navigation on a long list of radios.
  */
 export class CarouselRadio extends itownsWidgets.Widget {
   /**
@@ -58,6 +58,10 @@ export class CarouselRadio extends itownsWidgets.Widget {
       );
 
       this.radioContainer.appendChild(labelInput.parent);
+
+      // Autoplay configuration to play a timelapse
+      this.autoPlayInterval = null;
+      this.autoPlayTimeInMs = 2000;
     });
 
     // Create next button
@@ -67,12 +71,22 @@ export class CarouselRadio extends itownsWidgets.Widget {
     this.domElement.appendChild(nextButton);
 
     // Create play button
-    const playButton = document.createElement('button');
-    playButton.innerText = 'Play';
-    playButton.addEventListener('click', (event) =>
-      setInterval(this.autoPlay, 2000)
-    );
-    this.domElement.appendChild(playButton);
+    const autoPlayButton = document.createElement('button');
+    autoPlayButton.innerText = 'Play';
+    autoPlayButton.addEventListener('click', (event) => {
+      // Cleanup - stop interval already running
+      this.stopAutoPlay();
+
+      // Called the function to give an immediate response,
+      // because set interval will be called after the timer
+      this.autoPlay();
+
+      this.autoPlayInterval = setInterval(
+        () => this.autoPlay(),
+        this.autoPlayTimeInMs
+      );
+    });
+    this.domElement.appendChild(autoPlayButton);
   }
 
   /**
@@ -87,15 +101,24 @@ export class CarouselRadio extends itownsWidgets.Widget {
   }
 
   /**
+   * Get the current value checked or if undefined, a default value.
+   *
+   * @returns selection index
+   */
+  getCurrentSelectionIndex() {
+    const currentSelection = this.radioContainer.querySelector('input:checked');
+    // Default value for selection index is 0
+    return parseInt(currentSelection ? currentSelection.value : 0);
+  }
+
+  /**
    * Change selection to the next element.
    */
   next() {
     if (this.values.length <= 0) return;
 
     // Advance selection index
-    const currentSelection = this.radioContainer.querySelector('input:checked');
-    let selectionIndex =
-      parseInt(currentSelection ? currentSelection.value : 0) + 1;
+    let selectionIndex = this.getCurrentSelectionIndex() + 1;
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
     this.setChoice(selectionIndex);
@@ -108,16 +131,33 @@ export class CarouselRadio extends itownsWidgets.Widget {
     if (this.values.length <= 0) return;
 
     // Advance selection index
-    const currentSelection = this.radioContainer.querySelector('input:checked');
-    let selectionIndex =
-      parseInt(currentSelection ? currentSelection.value : 0) - 1;
+    let selectionIndex = parseInt(this.getCurrentSelectionIndex()) - 1;
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
     this.setChoice(selectionIndex);
   }
 
+  /**
+   * Manage autoplay lifetime and trigger next function.
+   */
   autoPlay() {
+    // Stop autoPlay when reaching the end
+    if (this.getCurrentSelectionIndex() === this.values.length - 1) {
+      this.stopAutoPlay();
+      return;
+    }
+
     this.next();
+  }
+
+  /**
+   * Stop and reset the autoPlay.
+   */
+  stopAutoPlay() {
+    if (this.autoPlayInterval) {
+      clearInterval(this.autoPlayInterval);
+      this.autoPlayInterval = null;
+    }
   }
 
   /**
@@ -126,7 +166,12 @@ export class CarouselRadio extends itownsWidgets.Widget {
    * @param {Event} event
    */
   onRadioClick(event) {
+    if (event.isTrusted && this.autoPlayInterval) {
+      this.stopAutoPlay();
+    }
+
     const value = event.currentTarget.getAttribute('value');
+
     // Custom event gathering all radios click event
     const onSelectEvent = new CustomEvent('onselect', { detail: value });
     this.radioContainer.dispatchEvent(onSelectEvent);
