@@ -5,3 +5,5 @@ lib
 .vs
 .vscode
 TODO.txt
+
+package-lock.json

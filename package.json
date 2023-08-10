@@ -1,8 +1,8 @@
 {
-  "name": "my_app_name",
+  "name": "ud_demo_vcity_sunlight",
   "private": true,
-  "version": "1.0.0",
-  "description": "This is a mono repo template using @ud-viz",
+  "version": "0.1",
+  "description": "This is a demo of Sunlight based on @ud-viz.",
   "workspaces": [
     "packages/*"
   ],
@@ -24,17 +24,20 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/VCityTeam/UD-Viz-Template.git"
+    "url": "git+https://github.com/VCityTeam/UD-Demo-VCity-Sunlight.git"
   },
   "keywords": [
+    "vcity",
+    "sunlight",
+    "3dtiles",
     "ud-viz"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "VCity",
+  "license": "LGPL-2.1-only",
   "bugs": {
-    "url": "https://github.com/VCityTeam/UD-Viz-Template/issues"
+    "url": "https://github.com/VCityTeam/UD-Demo-VCity-Sunlight/issues"
   },
-  "homepage": "https://github.com/VCityTeam/UD-Viz-Template",
+  "homepage": "https://github.com/VCityTeam/UD-Demo-VCity-Sunlight",
   "devDependencies": {
     "@ud-viz/node": "^3.0.0",
     "child-process-promise": "^2.2.1",
