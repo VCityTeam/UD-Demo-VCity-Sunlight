@@ -52,6 +52,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
     this.values.forEach((labelText, index) => {
       const labelInput = createLabelInput(labelText, 'radio');
       labelInput.parent.classList.add('radio-group');
+      labelInput.parent.classList.add('custom-btn');
 
       labelInput.input.setAttribute('value', index);
       labelInput.input.setAttribute('name', groupName);
