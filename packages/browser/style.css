@@ -1,8 +1,10 @@
 /* ============================== Global Settings ============================== */
 :root {
-  --border-radius: 20px;
+  --border-radius: 8px;
   --primary-color: white;
-  --secondary-color: black;
+  --primary-color-transparent: rgba(255, 255, 255, 0.75);
+  --secondary-color: rgb(30, 30, 30);
+  --secondary-color-transparent: rgba(30, 30, 30, 0.5);
 }
 
 body {
@@ -56,7 +58,12 @@ body {
 }
 
 .widgets-3dtiles-feature-container {
-  padding: 10px;
+  /* Do not add a border radius in the top-right corner, as this will offset the top-right corner of the window. */
+  border-radius: var(--border-radius) 0 var(--border-radius)
+    var(--border-radius);
+  padding: 20px;
+  background-color: var(--secondary-color-transparent);
+  color: var(--primary-color);
 }
 
 .top-widget {
@@ -91,7 +98,7 @@ body {
   justify-content: space-around;
   align-items: center;
   width: 50%;
-  background: white;
+  background: var(--primary-color-transparent);
   padding: 10px;
   border-radius: var(--border-radius);
 }
