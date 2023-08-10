@@ -5,7 +5,8 @@ const DEFAULT_OPTIONS = {
 };
 
 /**
- * Clamp a value between a min and max.
+ * Clamp a value between a min and max, because JS doesn't
+ * provide one by default : https://webtips.dev/webtips/javascript/how-to-clamp-numbers-in-javascript
  *
  * @param value
  * @param min
@@ -50,6 +51,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
     this.values = JSON.parse(options.radiosValues);
     this.values.forEach((labelText, index) => {
       const labelInput = createLabelInput(labelText, 'radio');
+      labelInput.parent.classList.add('radio-group');
 
       labelInput.input.setAttribute('value', index);
       labelInput.input.setAttribute('name', groupName);
@@ -170,7 +172,16 @@ export class CarouselRadio extends itownsWidgets.Widget {
       this.stopAutoPlay();
     }
 
+    // Remove style of the previous selection
+    const previousRadioGroup = this.radioContainer.querySelector(
+      '.radio-group.checked'
+    );
+    if (previousRadioGroup) previousRadioGroup.classList.remove('checked');
+
     const value = event.currentTarget.getAttribute('value');
+
+    // Add style to the current selection
+    event.currentTarget.parentElement.classList.add('checked');
 
     // Custom event gathering all radios click event
     const onSelectEvent = new CustomEvent('onselect', { detail: value });
