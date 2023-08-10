@@ -323,7 +323,7 @@ export class MyApplication {
   registerToSelectionEvents() {
     this.frame3DPlanar
       .getRootWebGL()
-      .addEventListener('onclick', (event) => this.updateSelection(event));
+      .addEventListener('click', (event) => this.updateSelection(event));
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
