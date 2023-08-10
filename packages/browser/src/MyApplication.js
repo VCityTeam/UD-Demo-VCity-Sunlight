@@ -6,6 +6,8 @@ import {
   Widget,
 } from '@ud-viz/browser';
 
+import { CarouselRadio } from './CarouselRadio';
+
 export class MyApplication {
   constructor() {
     this.extent = null;
@@ -21,6 +23,7 @@ export class MyApplication {
     };
 
     this.selectionWidget = null;
+    this.timeline = null;
   }
 
   start() {
@@ -69,17 +72,86 @@ export class MyApplication {
     this.frame3DPlanar = new Frame3DPlanar(this.extent, configFrame3D);
   }
 
-  init3DTiles() {
-    // ADD 3D LAYERS
-    const config3DTiles = [
+  /**
+   * Get all 3dTiles for several timestamp. Each element corresponds to
+   * a sunlight result at a given timestamp.
+   *
+   * @returns Config array of 3DTiles
+   */
+  getConfig3DTiles() {
+    return [
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
+        color: '0xFFFFFF',
+        date: '08H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__0900/tileset.json',
+        color: '0xFFFFFF',
+        date: '09H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1000/tileset.json',
+        color: '0xFFFFFF',
+        date: '10H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1100/tileset.json',
+        color: '0xFFFFFF',
+        date: '11H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1200/tileset.json',
+        color: '0xFFFFFF',
+        date: '12H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-01__1300/tileset.json',
+        color: '0xFFFFFF',
+        date: '13H',
+      },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
+        date: '14H',
       },
     ];
+  }
+
+  init3DTiles() {
+    // ADD 3D LAYERS
+    const config3DTiles = this.getConfig3DTiles();
+
+    add3DTilesLayers([config3DTiles[0]], this.frame3DPlanar.getItownsView());
+  }
+
+  /**
+   * Replace old 3d tiles by new 3DTiles after the date changed.
+   *
+   * @param {config3DTilesLayers} config3DTiles - An object containing 3DTiles layers configs
+   */
+  replace3DTiles(config3DTiles) {
+    // Remove previous 3DTiles because we change the timestamp
+    this.frame3DPlanar
+      .getItownsView()
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        this.frame3DPlanar.getItownsView().removeLayer(layer.id);
+      });
 
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
+
+    // Apply light style on new 3DTiles
+    this.applyLightStyle();
+    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   initUI() {
@@ -92,6 +164,21 @@ export class MyApplication {
       urlContainerClassName: 'widgets-3dtiles-url-container',
     });
     this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
+
+    // Add timelapse radios
+
+    // Sample datas only for testing purpose.
+    const dates = [];
+    const config3DTiles = this.getConfig3DTiles();
+    config3DTiles.forEach((element, index) => {
+      dates.push(element.date);
+    });
+    const jsonDates = JSON.stringify(dates);
+
+    this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
+      parentElement: this.domElement,
+      radiosValues: jsonDates,
+    });
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
@@ -153,7 +240,7 @@ export class MyApplication {
    * Get feature from the occulting id.
    * An occulting id follow these format : 'Tile-tiles/0.b3dm__Feature-0__Triangle-823'
    *
-   * @param {C3DTilesLayer} layer 3DTiles layer containing all features.
+   * @param {itowns.C3DTilesLayer} layer 3DTiles layer containing all features.
    * @param {string} occultingId Occulting id use to search an element.
    * @returns Feature present in the layer.
    */
@@ -234,7 +321,14 @@ export class MyApplication {
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
   registerToSelectionEvents() {
-    this.frame3DPlanar.getRootWebGL().onclick = (event) =>
-      this.updateSelection(event);
+    this.frame3DPlanar
+      .getRootWebGL()
+      .addEventListener('onclick', (event) => this.updateSelection(event));
+
+    // Switch 3DTiles with a new timestamp
+    this.timeline.radioContainer.addEventListener('onselect', (event) => {
+      const config3DTile = this.getConfig3DTiles()[event.detail];
+      this.replace3DTiles([config3DTile]);
+    });
   }
 }

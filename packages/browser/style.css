@@ -28,3 +28,22 @@ body {
 .right-widget {
   right: 0;
 }
+
+/* ============================== Carousel Widget ============================== */
+.carousel-container {
+  z-index: 2;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 15px 0;
+}
+
+.carousel-radios-container {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 50%;
+}
