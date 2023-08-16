@@ -7,6 +7,8 @@ import {
 } from '@ud-viz/browser';
 
 import { CarouselRadio } from './CarouselRadio';
+import { ExposurePercentView } from './views/ExposurePercentView';
+import { SunlightView } from './views/SunlightView';
 
 export class MyApplication {
   constructor() {
@@ -24,6 +26,7 @@ export class MyApplication {
 
     this.selectionWidget = null;
     this.timeline = null;
+    this.view = new SunlightView();
   }
 
   start() {
@@ -31,7 +34,7 @@ export class MyApplication {
     this.initFrame3D();
     this.init3DTiles();
     this.initUI();
-    this.applyLightStyle();
+    this.applyViewStyle();
     this.registerToSelectionEvents();
   }
 
@@ -150,7 +153,7 @@ export class MyApplication {
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
 
     // Apply light style on new 3DTiles
-    this.applyLightStyle();
+    this.applyViewStyle();
     this.frame3DPlanar.getItownsView().notifyChange();
   }
 
@@ -170,7 +173,7 @@ export class MyApplication {
     // Sample datas only for testing purpose.
     const dates = [];
     const config3DTiles = this.getConfig3DTiles();
-    config3DTiles.forEach((element, index) => {
+    config3DTiles.forEach((element) => {
       dates.push(element.date);
     });
     const jsonDates = JSON.stringify(dates);
@@ -180,39 +183,27 @@ export class MyApplication {
       radiosValues: jsonDates,
     });
 
+    const butonSwitchView = document.createElement('button');
+    butonSwitchView.innerText = 'Switch View';
+    butonSwitchView.classList.add('btn-switch-view');
+    this.domElement.appendChild(butonSwitchView);
+
     this.frame3DPlanar.appendToUI(this.domElement);
   }
 
   /**
-   *
    * Update style based on batch table and Sunlight result.
-   * Blue : feature is currently selected.
-   * Red : feature is occulting the feature selected.
-   * Yellow : feature is in the light.
-   * Black : feature is in the shadow.
    */
-  applyLightStyle() {
-    const myStyle = new itowns.Style({
-      fill: {
-        color: function (feature) {
-          if (feature.userData.isSelected) return 'blue';
-          if (feature.userData.isOcculting) return 'red';
-
-          if (feature.getInfo().batchTable.bLighted) return 'yellow';
-
-          return 'black';
-        },
-      },
-    });
-
-    // Apply style to layers
+  applyViewStyle() {
     this.frame3DPlanar
       .getItownsView()
       .getLayers()
       .filter((el) => el.isC3DTilesLayer)
       .forEach((layer) => {
-        layer.style = myStyle;
+        layer.style = this.view.getStyle();
       });
+
+    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   /**
@@ -317,6 +308,15 @@ export class MyApplication {
     this.frame3DPlanar.getItownsView().notifyChange();
   }
 
+  switchView() {
+    this.view =
+      this.view instanceof ExposurePercentView
+        ? new SunlightView()
+        : new ExposurePercentView();
+
+    this.applyViewStyle();
+  }
+
   /**
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
@@ -330,5 +330,10 @@ export class MyApplication {
       const config3DTile = this.getConfig3DTiles()[event.detail];
       this.replace3DTiles([config3DTile]);
     });
+
+    // Switch view
+    document
+      .querySelector('.btn-switch-view')
+      .addEventListener('click', (event) => this.switchView());
   }
 }
