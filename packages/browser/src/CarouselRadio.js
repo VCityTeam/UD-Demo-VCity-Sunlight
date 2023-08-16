@@ -1,7 +1,7 @@
 import { itownsWidgets, createLabelInput, THREE } from '@ud-viz/browser';
 
 const DEFAULT_OPTIONS = {
-  position: 'bottom-left',
+  position: '',
 };
 
 /**

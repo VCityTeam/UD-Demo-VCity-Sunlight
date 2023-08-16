@@ -19,6 +19,20 @@ body {
   font-size: 20px;
 }
 
+/* ============================== Bottom container ============================== */
+.bottom-container
+{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bottom-container button {
+  border-radius: var(--border-radius);
+  padding: 10px 30px;
+  cursor: pointer;
+}
+
 /* ============================== Custom Button Style ============================== */
 .custom-btn {
   background-color: var(--primary-color);
@@ -74,23 +88,21 @@ body {
   right: 0;
 }
 
+.bottom-widget{
+  position: absolute;
+  z-index:2;
+  bottom: 0;
+  width: 100%;
+}
+
 /* ============================== Carousel Widget ============================== */
 .carousel-container {
   text-align: center;
-  width: 100%;
   padding: 15px 0;
-  position: absolute;
-  z-index: 2;
-  bottom: 0;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
-}
-
-.carousel-container button {
-  border-radius: var(--border-radius);
-  padding: 10px 30px;
-  cursor: pointer;
+  width:80%;
 }
 
 .carousel-radios-container {
@@ -118,12 +130,4 @@ body {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
-}
-
-
-/* ============================== Switch View ============================== */
-.btn-switch-view
-{
-  position: relative;
-  z-index:2;
 }

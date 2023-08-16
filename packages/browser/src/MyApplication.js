@@ -168,6 +168,18 @@ export class MyApplication {
     });
     this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
 
+    // Bottom container containing all main buttons
+    const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('bottom-widget');
+    bottomContainer.classList.add('bottom-container');
+    this.domElement.appendChild(bottomContainer);
+
+    const butonSwitchView = document.createElement('button');
+    butonSwitchView.innerText = 'Switch View';
+    butonSwitchView.classList.add('btn-switch-view');
+    butonSwitchView.classList.add('custom-btn');
+    bottomContainer.appendChild(butonSwitchView);
+
     // Add timelapse radios
 
     // Sample datas only for testing purpose.
@@ -179,14 +191,9 @@ export class MyApplication {
     const jsonDates = JSON.stringify(dates);
 
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
-      parentElement: this.domElement,
+      parentElement: bottomContainer,
       radiosValues: jsonDates,
     });
-
-    const butonSwitchView = document.createElement('button');
-    butonSwitchView.innerText = 'Switch View';
-    butonSwitchView.classList.add('btn-switch-view');
-    this.domElement.appendChild(butonSwitchView);
 
     this.frame3DPlanar.appendToUI(this.domElement);
   }
