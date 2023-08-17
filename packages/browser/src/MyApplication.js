@@ -9,6 +9,7 @@ import {
 import { CarouselRadio } from './CarouselRadio';
 import { ExposurePercentView } from './views/ExposurePercentView';
 import { SunlightView } from './views/SunlightView';
+import { Time } from './utils/Time';
 
 export class MyApplication {
   constructor() {
@@ -81,64 +82,121 @@ export class MyApplication {
    *
    * @returns Config array of 3DTiles
    */
-  getConfig3DTiles() {
+  getConfigByHours() {
     return [
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
         color: '0xFFFFFF',
-        date: '08H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__0900/tileset.json',
         color: '0xFFFFFF',
-        date: '09H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1000/tileset.json',
-        color: '0xFFFFFF',
-        date: '10H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1100/tileset.json',
-        color: '0xFFFFFF',
-        date: '11H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1200/tileset.json',
-        color: '0xFFFFFF',
-        date: '12H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1300/tileset.json',
         color: '0xFFFFFF',
-        date: '13H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
-        date: '14H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-02__0900/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-02__1400/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-02-01__0900/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-02-01__1400/tileset.json',
+        color: '0xFFFFFF',
       },
     ];
   }
 
+  /**
+   * The function `getConfigByDays` extracts unique elements from a configuration array based on their
+   * date and sorts them in ascending order.
+   *
+   * @returns an array of objects that have been sorted by the "url" property.
+   */
+  getConfigByDays() {
+    const config = this.getConfigByHours();
+    const registeredDates = [];
+    const output = [];
+
+    config.forEach((element) => {
+      // Day already registered
+      const currentDate = Time.extractDateAndHours(element.url);
+      if (!currentDate || registeredDates.includes(currentDate)) {
+        return;
+      }
+
+      registeredDates.push(currentDate.getDate());
+      output.push(element);
+    });
+
+    // https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value/16174180#comment31549267_1129270
+    output.sort((a, b) => a.url - b.url);
+
+    return output;
+  }
+
+  /**
+   * The function `getConfigByMonths` extracts the month from each element's URL in the config array,
+   * removes duplicates, sorts the elements by month, and returns the sorted array.
+   *
+   * @returns an array of objects that have been sorted by the "url" property in ascending order.
+   */
+  getConfigByMonths() {
+    const config = this.getConfigByHours();
+    const registeredDates = [];
+    const output = [];
+
+    config.forEach((element) => {
+      // Day already registered
+      const currentDate = Time.extractDateAndHours(element.url);
+      if (!currentDate || registeredDates.includes(currentDate.getMonth())) {
+        return;
+      }
+
+      registeredDates.push(currentDate.getMonth());
+      output.push(element);
+    });
+
+    // https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value/16174180#comment31549267_1129270
+    output.sort((a, b) => a.url - b.url);
+
+    return output;
+  }
+
   init3DTiles() {
     // ADD 3D LAYERS
-    const config3DTiles = this.getConfig3DTiles();
+    const getConfigByHourss = this.getConfigByHours();
 
-    add3DTilesLayers([config3DTiles[0]], this.frame3DPlanar.getItownsView());
+    add3DTilesLayers(
+      [getConfigByHourss[0]],
+      this.frame3DPlanar.getItownsView()
+    );
   }
 
   /**
    * Replace old 3d tiles by new 3DTiles after the date changed.
    *
-   * @param {config3DTilesLayers} config3DTiles - An object containing 3DTiles layers configs
+   * @param {config3DTiles} config3DTiles - An object containing 3DTiles layers configs
    */
   replace3DTiles(config3DTiles) {
     // Remove previous 3DTiles because we change the timestamp
@@ -184,9 +242,14 @@ export class MyApplication {
 
     // Sample datas only for testing purpose.
     const dates = [];
-    const config3DTiles = this.getConfig3DTiles();
-    config3DTiles.forEach((element) => {
-      dates.push(element.date);
+    const getConfigByHours = this.getConfigByHours();
+    getConfigByHours.forEach((element) => {
+      const date = Time.formatForDisplay(element.url);
+      if (!date) {
+        return;
+      }
+
+      dates.push(date);
     });
     const jsonDates = JSON.stringify(dates);
 
@@ -334,8 +397,8 @@ export class MyApplication {
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      const config3DTile = this.getConfig3DTiles()[event.detail];
-      this.replace3DTiles([config3DTile]);
+      const getConfigByHours = this.getConfigByHours()[event.detail];
+      this.replace3DTiles([getConfigByHours]);
     });
 
     // Switch view
