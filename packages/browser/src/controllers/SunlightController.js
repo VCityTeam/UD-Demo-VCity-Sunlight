@@ -27,6 +27,10 @@ export class SunlightController {
     return new itowns.Style({
       fill: {
         color: function (feature) {
+          // Selection style
+          if (feature.userData.isSelected) return 'green';
+          if (feature.userData.isOcculting) return 'pink';
+
           if (feature.getInfo().batchTable.bLighted) return 'yellow';
 
           return 'black';

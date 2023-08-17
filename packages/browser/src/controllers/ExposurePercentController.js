@@ -9,7 +9,6 @@ export class ExposurePercentController extends AggregateController {
   }
 
   getTitle() {
-    console.log(this.timeScale);
     if (this.timeScale == TimeScales.Day) {
       return 'Sunlight exposure by day';
     }
@@ -29,6 +28,10 @@ export class ExposurePercentController extends AggregateController {
       return new itowns.Style({
         fill: {
           color: function (feature) {
+            // Selection style
+            if (feature.userData.isSelected) return 'green';
+            if (feature.userData.isOcculting) return 'pink';
+
             const alpha =
               feature.getInfo().batchTable.monthlyExposurePercent / 100;
 
