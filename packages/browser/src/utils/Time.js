@@ -1,3 +1,10 @@
+/* TimeScale supported by the application */
+export const TimeScales = {
+  Hour: 0,
+  Day: 1,
+  Month: 2,
+};
+
 /* The Time class provides methods to convert Sunlight date to JS Date and 
 centralize date format for display */
 export class Time {
@@ -31,13 +38,35 @@ export class Time {
   }
 
   /**
-   * Format a date following to "HH DD-MM-YY"
+   * Get string represention of a given date depending on the timescale wanted.
    *
-   * @param date - The `date` parameter is a string representing a date and time in a specific
-   * format.
-   * @returns {string} a formatted string that includes the hour and day extracted from the rawDate.
+   * @param {Date} date - The `date` parameter is a JavaScript `Date` object that represents a specific date
+   * and time.
+   * @param {TimeScales} timeScale - Time scale wanted on the string result.
+   * @returns {string} a string that represents the full date and times
    */
-  static formatForDisplay(date) {
+  static getDisplayFor(date, timeScale = TimeScales.Hour) {
+    switch (timeScale) {
+      case TimeScales.Day:
+        return Time.getDateString(date);
+
+      case TimeScales.Month:
+        return Time.getMonthYearString(date);
+
+      default:
+        return Time.getFullDatesString(date);
+    }
+  }
+
+  /**
+   * The function `getFullDatesString` takes a date object and returns a formatted string representing
+   * the date and time in the format "H dd/mm/yy".
+   *
+   * @param {Date} date - The `date` parameter is a JavaScript `Date` object that represents a specific date
+   * and time.
+   * @returns {string} a string that represents the full date and time in the format "H dd/mm/yy".
+   */
+  static getFullDatesString(date) {
     const localString = date.toLocaleString('fr-FR', {
       hour: 'numeric',
       day: '2-digit',
@@ -47,5 +76,33 @@ export class Time {
     });
 
     return localString.split(' ')[1] + ' H ' + localString.split(' ')[0];
+  }
+
+  /**
+   * The function `getDateString` returns a formatted date string in the format "MM/DD/YY".
+   *
+   * @param {Date} date - The `date` parameter is the date object that you want to convert to a formatted
+   * string.
+   * @returns {string} a formatted date string in the format "MM/DD/YY".
+   */
+  static getDateString(date) {
+    return date.toLocaleString('fr-FR', {
+      day: '2-digit',
+      year: '2-digit',
+      month: '2-digit',
+    });
+  }
+
+  /**
+   * The function `getMonthYearString` takes a date object and returns a string representation of the
+   * month and year in a short format.
+   *
+   * @param {Date} date - The `date` parameter is a JavaScript `Date` object that represents a specific date
+   * and time.
+   * @returns {string} a string representation of the month and year of the given date.
+   */
+  static getMonthYearString(date) {
+    const options = { month: 'short', year: 'numeric' };
+    return date.toLocaleString('fr-FR', options);
   }
 }

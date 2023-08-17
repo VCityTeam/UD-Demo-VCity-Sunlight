@@ -1,20 +1,47 @@
 import { SunlightController } from './SunlightController';
-import { Time } from '../utils/Time';
+import { Time, TimeScales } from '../utils/Time';
 
 /* Controller to precompute aggegate in 3DTiles by hour, day or month  */
 export class AggregateController extends SunlightController {
   constructor(config3DTiles) {
     super(config3DTiles);
 
-    this.filteredConfig = this.filterConfigByDays();
+    this.switchScale(TimeScales.Month);
   }
 
-  getConfigs() {
+  getCurrentConfig() {
     return this.filteredConfig;
   }
 
+  /**
+   * Get config3DTiles given an index of filtered config (by day or month).
+   *
+   * @param {int} configIndex
+   * @returns {config3DTiles}
+   */
   getConfigAt(configIndex) {
     return this.filteredConfig[configIndex];
+  }
+
+  /**
+   * The function `switchScale` takes a `timeScale` parameter and based on its value, filters the
+   * configuration either by days or by months.
+   *
+   * @param {TimeScales} timeScale - The time scale parameter is a value that determines the scale at which the data
+   * should be filtered. It can be either "Day" or any other value.
+   */
+  switchScale(timeScale) {
+    switch (timeScale) {
+      case TimeScales.Day:
+        this.filteredConfig = this.filterConfigByDays();
+        break;
+
+      default:
+        this.filteredConfig = this.filterConfigByMonths();
+        break;
+    }
+
+    this.timeScale = timeScale;
   }
 
   /**
@@ -44,12 +71,11 @@ export class AggregateController extends SunlightController {
    * @returns {config3DTiles} an array of config3DTiles containing all aggregate.
    */
   filterConfigByMonths() {
-    const config = this.getConfigs();
     const registeredDates = [];
     const output = [];
 
-    config.forEach((element) => {
-      // Day already registered
+    this.config3DTiles.forEach((element) => {
+      // Month already registered
       const currentDate = Time.extractDateAndHours(element.url);
       if (!currentDate || registeredDates.includes(currentDate.getMonth())) {
         return;
@@ -58,6 +84,9 @@ export class AggregateController extends SunlightController {
       registeredDates.push(currentDate.getMonth());
       output.push(element);
     });
+
+    console.log(registeredDates);
+    console.log(output);
 
     return output;
   }

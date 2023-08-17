@@ -1,10 +1,11 @@
 import { itowns } from '@ud-viz/browser';
-import { Time } from '../utils/Time';
+import { Time, TimeScales } from '../utils/Time';
 
 /* Controller to display light and shadow by hour */
 export class SunlightController {
   constructor(config3DTiles) {
     this.config3DTiles = config3DTiles;
+    this.timeScale = TimeScales.Hour;
   }
 
   /**
@@ -24,12 +25,7 @@ export class SunlightController {
     });
   }
 
-  /**
-   * The getConfigs function returns the value of the config3DTiles property.
-   *
-   * @returns {config3DTiles} The function `getConfigs()` is returning the value of `this.config3DTiles`.
-   */
-  getConfigs() {
+  getCurrentConfig() {
     return this.config3DTiles;
   }
 
@@ -52,14 +48,14 @@ export class SunlightController {
   getDisplayedDates() {
     const dates = [];
 
-    this.config3DTiles.forEach((element) => {
+    this.getCurrentConfig().forEach((element) => {
       // Check if we can use the date in url
       const date = Time.extractDateAndHours(element.url);
       if (!date) {
         return;
       }
 
-      const formatedDate = Time.formatForDisplay(date);
+      const formatedDate = Time.getDisplayFor(date, this.timeScale);
       dates.push(formatedDate);
     });
 

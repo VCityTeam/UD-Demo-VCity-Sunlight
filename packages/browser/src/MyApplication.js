@@ -303,6 +303,9 @@ export class MyApplication {
     this.frame3DPlanar.getItownsView().notifyChange();
   }
 
+  /**
+   * The switchView function switches between two different controllers and updates the view.
+   */
   switchView() {
     this.controller =
       this.controller instanceof ExposurePercentController

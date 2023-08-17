@@ -7,6 +7,12 @@ export class ExposurePercentController extends AggregateController {
     super(config3DTiles);
   }
 
+  /**
+   * The function returns a style object that determines the fill color of a feature based on its
+   * monthly or daily exposure percentage.
+   *
+   * @returns {itowns.Style} Itowns style depending on monthly/daily exposure percent
+   */
   getStyle() {
     return new itowns.Style({
       fill: {
