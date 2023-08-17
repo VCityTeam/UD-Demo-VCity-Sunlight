@@ -37,17 +37,17 @@ export class CarouselRadio extends itownsWidgets.Widget {
   constructor(itownsView, options) {
     super(itownsView, options, DEFAULT_OPTIONS);
 
-    // Enable / Disable timelapse and autoplay button
-    this.timelapseState = options.timelapseState
-      ? options.timelapseState
-      : false;
-
     this.createHTMLStructure();
 
     // Create all radios
     if (options.choices) {
       this.setChoices(options.choices);
     }
+
+    // Enable / Disable timelapse and autoplay button
+    this.setTimelapseState(
+      options.timelapseState ? options.timelapseState : false
+    );
 
     // Autoplay configuration to play a timelapse
     this.autoPlayInterval = null;
@@ -64,7 +64,10 @@ export class CarouselRadio extends itownsWidgets.Widget {
     // Create previous button
     const previousButton = document.createElement('button');
     previousButton.innerText = 'Previous';
-    previousButton.addEventListener('click', (event) => this.previous());
+    previousButton.addEventListener('click', (event) => {
+      this.stopAutoPlay();
+      this.previous();
+    });
     this.domElement.appendChild(previousButton);
 
     // Create radios inputs
@@ -75,34 +78,35 @@ export class CarouselRadio extends itownsWidgets.Widget {
     // Create next button
     const nextButton = document.createElement('button');
     nextButton.innerText = 'Next';
-    nextButton.addEventListener('click', (event) => this.next());
+    nextButton.addEventListener('click', (event) => {
+      this.stopAutoPlay();
+      this.next();
+    });
     this.domElement.appendChild(nextButton);
 
-    if (this.timelapseState) {
-      // Create play button
-      const autoPlayButton = document.createElement('button');
-      autoPlayButton.innerText = 'Play';
-      autoPlayButton.classList.add('auto-play-button');
-      autoPlayButton.addEventListener('click', (event) => {
-        // Toggle autoPlay state
-        if (this.autoPlayInterval) {
-          // Cleanup - stop interval already running
-          this.stopAutoPlay();
-          return;
-        }
+    // Create play button
+    const autoPlayButton = document.createElement('button');
+    autoPlayButton.innerText = 'Play';
+    autoPlayButton.classList.add('auto-play-button');
+    autoPlayButton.addEventListener('click', (event) => {
+      // Toggle autoPlay state
+      if (this.autoPlayInterval) {
+        // Cleanup - stop interval already running
+        this.stopAutoPlay();
+        return;
+      }
 
-        // Called the function to give an immediate response,
-        // because set interval will be called after the timer
-        this.autoPlay();
+      // Called the function to give an immediate response,
+      // because set interval will be called after the timer
+      this.autoPlay();
 
-        this.autoPlayInterval = setInterval(
-          () => this.autoPlay(),
-          this.autoPlayTimeInMs
-        );
-      });
+      this.autoPlayInterval = setInterval(
+        () => this.autoPlay(),
+        this.autoPlayTimeInMs
+      );
+    });
 
-      this.domElement.appendChild(autoPlayButton);
-    }
+    this.domElement.appendChild(autoPlayButton);
   }
 
   /**
@@ -182,6 +186,19 @@ export class CarouselRadio extends itownsWidgets.Widget {
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
     this.triggerChoice(selectionIndex);
+  }
+
+  /**
+   * Sets the state of the timelapse feature and displays or hides the autoplay button accordingly.
+   *
+   * @param {boolean} enabled - Determines whether the timelapse state should be enabled or disabled.
+   */
+  setTimelapseState(enabled) {
+    // Show / Hide timelaspe autoplay button
+    const autoPlayButton = document.querySelector('.auto-play-button');
+    autoPlayButton.display = enabled ? 'initial' : 'none';
+
+    this.timelapseState = enabled;
   }
 
   /**
