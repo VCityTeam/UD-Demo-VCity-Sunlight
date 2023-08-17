@@ -29,15 +29,16 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    *
    * @param {itowns.View} itownsView - itowns view
-   * @param {object} options - options
+   * @param {object} options - Options
    * @param {Array.<string>} options.choices - Array of all values displayed (index is used for identifier and value for label text)
    * @param {boolean} options.timelapseState - Timelapse functionnalities state, disable by default.
+   * @param {string} options.title - Title carousel at the top of carousel.
    * @param {HTMLElement} options.parentElement - parent element of the widget
    */
   constructor(itownsView, options) {
     super(itownsView, options, DEFAULT_OPTIONS);
 
-    this.createHTMLStructure();
+    this.createHTMLStructure(options);
 
     // Create all radios
     if (options.choices) {
@@ -57,8 +58,10 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    * The function creates the HTML structure for a carousel component with previous and next buttons,
    * radio inputs, and a play button.
+   *
+   * @param {object} options - Options
    */
-  createHTMLStructure() {
+  createHTMLStructure(options) {
     this.domElement.classList.add('carousel-container');
 
     // Create previous button
@@ -70,7 +73,14 @@ export class CarouselRadio extends itownsWidgets.Widget {
     });
     this.domElement.appendChild(previousButton);
 
-    // Create radios inputs
+    // Radio title
+    if (options.title) {
+      const title = document.createElement('h2');
+      title.innerText = options.title;
+      this.domElement.appendChild(title);
+    }
+
+    // Radio container
     this.radioContainer = document.createElement('div');
     this.radioContainer.classList.add('carousel-radios-container');
     this.domElement.appendChild(this.radioContainer);

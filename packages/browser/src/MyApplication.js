@@ -200,7 +200,7 @@ export class MyApplication {
     // Group by buttons
     this.filterCarousel = new CarouselRadio(
       this.frame3DPlanar.getItownsView(),
-      { parentElement: selectionContainer }
+      { parentElement: selectionContainer /* title: 'Filters'*/ }
     );
 
     // Add timelapse radios
