@@ -82,9 +82,14 @@ export class CarouselRadio extends itownsWidgets.Widget {
       // Create play button
       const autoPlayButton = document.createElement('button');
       autoPlayButton.innerText = 'Play';
+      autoPlayButton.classList.add('auto-play-button');
       autoPlayButton.addEventListener('click', (event) => {
-        // Cleanup - stop interval already running
-        this.stopAutoPlay();
+        // Toggle autoPlay state
+        if (this.autoPlayInterval) {
+          // Cleanup - stop interval already running
+          this.stopAutoPlay();
+          return;
+        }
 
         // Called the function to give an immediate response,
         // because set interval will be called after the timer
@@ -191,6 +196,8 @@ export class CarouselRadio extends itownsWidgets.Widget {
       return;
     }
 
+    const autoPlayButton = document.querySelector('.auto-play-button');
+    autoPlayButton.innerText = 'Pause';
     this.next();
   }
 
@@ -201,6 +208,9 @@ export class CarouselRadio extends itownsWidgets.Widget {
     if (this.autoPlayInterval) {
       clearInterval(this.autoPlayInterval);
       this.autoPlayInterval = null;
+
+      const autoPlayButton = document.querySelector('.auto-play-button');
+      autoPlayButton.innerText = 'Play';
     }
   }
 
