@@ -8,6 +8,15 @@ export class ExposurePercentController extends AggregateController {
     super(config3DTiles);
   }
 
+  getTitle() {
+    console.log(this.timeScale);
+    if (this.timeScale == TimeScales.Day) {
+      return 'Sunlight exposure by day';
+    }
+
+    return 'Sunlight exposure by month';
+  }
+
   /**
    * The function returns a style object that determines the fill color of a feature based on its
    * monthly or daily exposure percentage.

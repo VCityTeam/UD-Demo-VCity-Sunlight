@@ -163,14 +163,21 @@ export class MyApplication {
   }
 
   initUI() {
+    // Add title
+    const title = document.createElement('h1');
+    this.domElement.appendChild(title);
+
     // Add selection widget
-    this.selectionWidget = new Widget.C3DTiles(this.frame3DPlanar.itownsView, {
-      overrideStyle: new itowns.Style({ fill: { color: 'white' } }),
-      parentElement: this.domElement,
-      layerContainerClassName: 'widgets-3dtiles-layer-container',
-      c3DTFeatureInfoContainerClassName: 'widgets-3dtiles-feature-container',
-      urlContainerClassName: 'widgets-3dtiles-url-container',
-    });
+    this.selectionWidget = new Widget.C3DTiles(
+      this.frame3DPlanar.getItownsView(),
+      {
+        overrideStyle: new itowns.Style({ fill: { color: 'white' } }),
+        parentElement: this.domElement,
+        layerContainerClassName: 'widgets-3dtiles-layer-container',
+        c3DTFeatureInfoContainerClassName: 'widgets-3dtiles-feature-container',
+        urlContainerClassName: 'widgets-3dtiles-url-container',
+      }
+    );
     this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
 
     // Bottom container containing all main buttons
@@ -332,6 +339,8 @@ export class MyApplication {
     this.filterCarousel.triggerChoice(0);
 
     this.updateTimeline();
+
+    this.updateTitle();
   }
 
   /**
@@ -360,6 +369,13 @@ export class MyApplication {
   }
 
   /**
+   * Update title page based on controller title.
+   */
+  updateTitle() {
+    document.querySelector('h1').innerText = this.controller.getTitle();
+  }
+
+  /**
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
   registerToSelectionEvents() {
@@ -371,6 +387,7 @@ export class MyApplication {
     this.filterCarousel.radioContainer.addEventListener('onselect', (event) => {
       this.controller.applyFilter(event.detail);
       this.updateTimeline();
+      this.updateTitle();
     });
 
     // Switch 3DTiles with a new timestamp

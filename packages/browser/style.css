@@ -5,6 +5,7 @@
   --primary-color-transparent: rgba(255, 255, 255, 0.75);
   --secondary-color: rgb(30, 30, 30);
   --secondary-color-transparent: rgba(30, 30, 30, 0.5);
+  --title-size: 22px;
 }
 
 body {
@@ -12,11 +13,23 @@ body {
   overflow: hidden;
 }
 
+.ui_Frame3DBase {
+  position: absolute;
+  z-index: 2;
+}
+
 .ui_Frame3DBase,
 .ui_Frame3DBase button {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
     'Lucida Sans', Arial, sans-serif;
   font-size: 20px;
+}
+
+/* ============================== Font Settings ============================== */
+h1 {
+  font-size: var(--title-size);
+  padding: 0 10px;
+  color: var(--secondary-color);
 }
 
 /* ============================== Custom Button Style ============================== */
@@ -46,7 +59,6 @@ body {
 /* ============================== Selection Widget ============================== */
 #widgets-3dtiles {
   position: fixed;
-  z-index: 2;
   width: fit-content;
 }
 
@@ -80,7 +92,6 @@ body {
   justify-content: center;
   align-items: center;
   position: absolute;
-  z-index: 2;
   bottom: 0;
   width: 100%;
 }

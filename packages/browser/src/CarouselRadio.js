@@ -195,7 +195,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
    */
   setTimelapseState(enabled) {
     // Show / Hide timelaspe autoplay button
-    const autoPlayButton = document.querySelector('.auto-play-button');
+    const autoPlayButton = this.domElement.querySelector('.auto-play-button');
     autoPlayButton.display = enabled ? 'initial' : 'none';
 
     this.timelapseState = enabled;
@@ -213,7 +213,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
       return;
     }
 
-    const autoPlayButton = document.querySelector('.auto-play-button');
+    const autoPlayButton = this.domElement.querySelector('.auto-play-button');
     autoPlayButton.innerText = 'Pause';
     this.next();
   }
@@ -226,7 +226,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
       clearInterval(this.autoPlayInterval);
       this.autoPlayInterval = null;
 
-      const autoPlayButton = document.querySelector('.auto-play-button');
+      const autoPlayButton = this.domElement.querySelector('.auto-play-button');
       autoPlayButton.innerText = 'Play';
     }
   }

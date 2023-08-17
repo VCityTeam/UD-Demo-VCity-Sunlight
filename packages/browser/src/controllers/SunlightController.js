@@ -10,6 +10,15 @@ export class SunlightController {
   }
 
   /**
+   * Returns the title of the controller.
+   *
+   * @returns {string} - Title string
+   */
+  getTitle() {
+    return 'Sunlight and shadow visualization';
+  }
+
+  /**
    * Get style affecting feature based on Sunlight result (in light : yellow, in shadow : black).
    *
    * @returns {itowns.Style} The code is returning a new instance of the `itowns.Style` class.
