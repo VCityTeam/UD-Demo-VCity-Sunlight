@@ -35,7 +35,6 @@ export class MyApplication {
   start() {
     this.initItownsExtent();
     this.initFrame3D();
-    this.init3DTiles();
     this.initUI();
     this.registerToSelectionEvents();
     this.updateView();
@@ -139,14 +138,6 @@ export class MyApplication {
     });
 
     return output;
-  }
-
-  init3DTiles() {
-    // ADD 3D LAYERS
-    add3DTilesLayers(
-      [this.config3DTiles[0]],
-      this.frame3DPlanar.getItownsView()
-    );
   }
 
   /**
@@ -338,6 +329,7 @@ export class MyApplication {
     // Update filters
     const filters = this.controller.getFiltersName();
     this.filterCarousel.setChoices(filters);
+    this.filterCarousel.triggerChoice(0);
 
     this.updateTimeline();
   }
@@ -364,6 +356,7 @@ export class MyApplication {
   updateTimeline() {
     const dates = this.controller.getDisplayedDates();
     this.timeline.setChoices(dates);
+    this.timeline.triggerChoice(0);
   }
 
   /**
