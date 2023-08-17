@@ -9,10 +9,6 @@ export class AggregateController extends SunlightController {
     this.switchScale(TimeScales.Month);
   }
 
-  getCurrentConfig() {
-    return this.filteredConfig;
-  }
-
   /**
    * Get config3DTiles given an index of filtered config (by day or month).
    *

@@ -54,6 +54,9 @@ export class Time {
       case TimeScales.Month:
         return Time.getMonthYearString(date);
 
+      case TimeScales.Hour:
+        return Time.getHourString(date);
+
       default:
         return Time.getFullDatesString(date);
     }
@@ -68,13 +71,15 @@ export class Time {
    * @returns {string} a string that represents the full date and time in the format "H dd/mm/yy".
    */
   static getFullDatesString(date) {
-    const localString = date.toLocaleString('fr-FR', {
-      hour: 'numeric',
-      day: '2-digit',
-      year: '2-digit',
-      month: '2-digit',
-      hour12: false,
-    });
+    const localString = date
+      .toLocaleString('en-EN', {
+        hour: 'numeric',
+        day: '2-digit',
+        year: '2-digit',
+        month: '2-digit',
+        hour12: false,
+      })
+      .replace(',', '');
 
     return localString.split(' ')[1] + ' H ' + localString.split(' ')[0];
   }
@@ -87,11 +92,13 @@ export class Time {
    * @returns {string} a formatted date string in the format "MM/DD/YY".
    */
   static getDateString(date) {
-    return date.toLocaleString('fr-FR', {
-      day: '2-digit',
-      year: '2-digit',
-      month: '2-digit',
-    });
+    return date
+      .toLocaleString('en-EN', {
+        day: '2-digit',
+        year: '2-digit',
+        month: '2-digit',
+      })
+      .replace(',', '');
   }
 
   /**
@@ -104,6 +111,14 @@ export class Time {
    */
   static getMonthYearString(date) {
     const options = { month: 'short', year: 'numeric' };
-    return date.toLocaleString('fr-FR', options);
+    return date.toLocaleString('en-EN', options).replace(',', '');
+  }
+
+  static getHourString(date) {
+    return (
+      date
+        .toLocaleString('en-EN', { hour: 'numeric', hour12: false })
+        .replace(' ', '') + 'H'
+    );
   }
 }

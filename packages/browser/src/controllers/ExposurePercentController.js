@@ -46,4 +46,17 @@ export class ExposurePercentController extends AggregateController {
       },
     });
   }
+
+  getFiltersName() {
+    return ['Day', 'Month'];
+  }
+
+  applyFilter(filterIndex) {
+    const filterName = this.getFiltersName()[filterIndex];
+    if (filterName == 'Day') {
+      this.switchScale(TimeScales.Day);
+    } else {
+      this.switchScale(TimeScales.Month);
+    }
+  }
 }

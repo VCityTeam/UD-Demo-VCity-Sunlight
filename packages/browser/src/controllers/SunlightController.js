@@ -5,6 +5,7 @@ import { Time, TimeScales } from '../utils/Time';
 export class SunlightController {
   constructor(config3DTiles) {
     this.config3DTiles = config3DTiles;
+    this.filteredConfig = config3DTiles;
     this.timeScale = TimeScales.Hour;
   }
 
@@ -26,7 +27,7 @@ export class SunlightController {
   }
 
   getCurrentConfig() {
-    return this.config3DTiles;
+    return this.filteredConfig;
   }
 
   /**
@@ -37,6 +38,52 @@ export class SunlightController {
    */
   getConfigAt(index) {
     return this.config3DTiles[index];
+  }
+
+  /**
+   * Get filter names implemented by the current controller.
+   *
+   * @returns {Array.<string>} - array of string of all filters supported.
+   */
+  getFiltersName() {
+    const days = new Set();
+    this.config3DTiles.forEach((element) => {
+      const date = Time.extractDateAndHours(element.url);
+      if (!date) {
+        return;
+      }
+
+      const formatedDate = Time.getDateString(date);
+      days.add(formatedDate);
+    });
+
+    return Array.from(days);
+  }
+
+  /**
+   * Apply filters on config3DTiles based on filter index.
+   *
+   * @param {int} filterIndex - The filterIndex parameter is the index of the filter that you want to apply.
+   * It is used to determine which filter to apply from the list of available 3DTiles.
+   */
+  applyFilter(filterIndex) {
+    this.filteredConfig = [];
+    const dayFilter = this.getFiltersName()[filterIndex];
+
+    // Filter config if the date is the same as the filter
+    this.config3DTiles.forEach((element) => {
+      const date = Time.extractDateAndHours(element.url);
+      if (!date) {
+        return;
+      }
+
+      const formatedDate = Time.getDateString(date);
+      if (formatedDate != dayFilter) {
+        return;
+      }
+
+      this.filteredConfig.push(element);
+    });
   }
 
   /**

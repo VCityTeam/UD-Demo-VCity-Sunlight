@@ -28,6 +28,7 @@ export class MyApplication {
 
     this.selectionWidget = null;
     this.timeline = null;
+    this.filterCarousel = null;
     this.controller = new SunlightController(this.config3DTiles);
   }
 
@@ -187,15 +188,27 @@ export class MyApplication {
     bottomContainer.classList.add('bottom-container');
     this.domElement.appendChild(bottomContainer);
 
-    const butonSwitchView = document.createElement('button');
-    butonSwitchView.innerText = 'Switch View';
-    butonSwitchView.classList.add('btn-switch-view');
-    butonSwitchView.classList.add('custom-btn');
-    bottomContainer.appendChild(butonSwitchView);
+    // Switch view
+    const buttonSwitchView = document.createElement('button');
+    buttonSwitchView.innerText = 'Switch View';
+    buttonSwitchView.classList.add('btn-switch-view');
+    buttonSwitchView.classList.add('custom-btn');
+    bottomContainer.appendChild(buttonSwitchView);
+
+    // Filter and date selection container
+    const selectionContainer = document.createElement('div');
+    selectionContainer.classList.add('date-selection-container');
+    bottomContainer.appendChild(selectionContainer);
+
+    // Group by buttons
+    this.filterCarousel = new CarouselRadio(
+      this.frame3DPlanar.getItownsView(),
+      { parentElement: selectionContainer }
+    );
 
     // Add timelapse radios
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
-      parentElement: bottomContainer,
+      parentElement: selectionContainer,
       timelapseState: true,
     });
 
@@ -322,9 +335,11 @@ export class MyApplication {
   updateView() {
     this.applyStyle();
 
-    // Update Timeline
-    const dates = this.controller.getDisplayedDates();
-    this.timeline.setChoices(dates);
+    // Update filters
+    const filters = this.controller.getFiltersName();
+    this.filterCarousel.setChoices(filters);
+
+    this.updateTimeline();
   }
 
   /**
@@ -344,12 +359,26 @@ export class MyApplication {
   }
 
   /**
+   * Update the timeline with the displayed dates obtained from the controller.
+   */
+  updateTimeline() {
+    const dates = this.controller.getDisplayedDates();
+    this.timeline.setChoices(dates);
+  }
+
+  /**
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
   registerToSelectionEvents() {
     this.frame3DPlanar
       .getRootWebGL()
       .addEventListener('click', (event) => this.updateSelection(event));
+
+    // Apply filters on controller
+    this.filterCarousel.radioContainer.addEventListener('onselect', (event) => {
+      this.controller.applyFilter(event.detail);
+      this.updateTimeline();
+    });
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
