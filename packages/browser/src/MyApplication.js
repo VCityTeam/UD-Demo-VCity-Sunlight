@@ -15,7 +15,6 @@ export class MyApplication {
   constructor() {
     this.extent = null;
     this.frame3DPlanar = null;
-    this.domElement = document.createElement('div');
 
     this.config3DTiles = this.formatConfig3DTiles();
 
@@ -165,14 +164,14 @@ export class MyApplication {
   initUI() {
     // Add title
     const title = document.createElement('h1');
-    this.domElement.appendChild(title);
+    this.frame3DPlanar.appendToUI(title);
 
     // Add selection widget
     this.selectionWidget = new Widget.C3DTiles(
       this.frame3DPlanar.getItownsView(),
       {
         overrideStyle: new itowns.Style({ fill: { color: 'white' } }),
-        parentElement: this.domElement,
+        parentElement: this.frame3DPlanar.ui,
         layerContainerClassName: 'widgets-3dtiles-layer-container',
         c3DTFeatureInfoContainerClassName: 'widgets-3dtiles-feature-container',
         urlContainerClassName: 'widgets-3dtiles-url-container',
@@ -184,7 +183,7 @@ export class MyApplication {
     const bottomContainer = document.createElement('div');
     bottomContainer.classList.add('bottom-widget');
     bottomContainer.classList.add('bottom-container');
-    this.domElement.appendChild(bottomContainer);
+    this.frame3DPlanar.appendToUI(bottomContainer);
 
     // Switch view
     const buttonSwitchView = document.createElement('button');
@@ -209,8 +208,6 @@ export class MyApplication {
       parentElement: selectionContainer,
       timelapseState: true,
     });
-
-    this.frame3DPlanar.appendToUI(this.domElement);
   }
 
   /**
