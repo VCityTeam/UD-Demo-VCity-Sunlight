@@ -85,9 +85,6 @@ export class AggregateController extends SunlightController {
       output.push(element);
     });
 
-    console.log(registeredDates);
-    console.log(output);
-
     return output;
   }
 }

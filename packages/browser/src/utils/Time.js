@@ -34,7 +34,8 @@ export class Time {
     const day = date.split(' ')[0].split('-')[2];
     const hour = date.split(' ')[1].slice(0, 2);
 
-    return new Date(year, month, day, hour);
+    // Month - 1, because JS Date start month at 0
+    return new Date(year, parseInt(month) - 1, day, hour);
   }
 
   /**
