@@ -196,6 +196,7 @@ export class MyApplication {
     // Add timelapse radios
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
       parentElement: bottomContainer,
+      timelapseState: true,
     });
 
     this.frame3DPlanar.appendToUI(this.domElement);

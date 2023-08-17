@@ -6,7 +6,7 @@ import {
 } from '@ud-viz/browser';
 
 const DEFAULT_OPTIONS = {
-  position: '',
+  position: 'bottom',
 };
 
 /**
@@ -31,10 +31,16 @@ export class CarouselRadio extends itownsWidgets.Widget {
    * @param {itowns.View} itownsView - itowns view
    * @param {object} options - options
    * @param {Array.<string>} options.choices - Array of all values displayed (index is used for identifier and value for label text)
+   * @param {boolean} options.timelapseState - Timelapse functionnalities state, disable by default.
    * @param {HTMLElement} options.parentElement - parent element of the widget
    */
   constructor(itownsView, options) {
     super(itownsView, options, DEFAULT_OPTIONS);
+
+    // Enable / Disable timelapse and autoplay button
+    this.timelapseState = options.timelapseState
+      ? options.timelapseState
+      : false;
 
     this.createHTMLStructure();
 
@@ -72,24 +78,26 @@ export class CarouselRadio extends itownsWidgets.Widget {
     nextButton.addEventListener('click', (event) => this.next());
     this.domElement.appendChild(nextButton);
 
-    // Create play button
-    const autoPlayButton = document.createElement('button');
-    autoPlayButton.innerText = 'Play';
-    autoPlayButton.addEventListener('click', (event) => {
-      // Cleanup - stop interval already running
-      this.stopAutoPlay();
+    if (this.timelapseState) {
+      // Create play button
+      const autoPlayButton = document.createElement('button');
+      autoPlayButton.innerText = 'Play';
+      autoPlayButton.addEventListener('click', (event) => {
+        // Cleanup - stop interval already running
+        this.stopAutoPlay();
 
-      // Called the function to give an immediate response,
-      // because set interval will be called after the timer
-      this.autoPlay();
+        // Called the function to give an immediate response,
+        // because set interval will be called after the timer
+        this.autoPlay();
 
-      this.autoPlayInterval = setInterval(
-        () => this.autoPlay(),
-        this.autoPlayTimeInMs
-      );
-    });
+        this.autoPlayInterval = setInterval(
+          () => this.autoPlay(),
+          this.autoPlayTimeInMs
+        );
+      });
 
-    this.domElement.appendChild(autoPlayButton);
+      this.domElement.appendChild(autoPlayButton);
+    }
   }
 
   /**
@@ -175,6 +183,8 @@ export class CarouselRadio extends itownsWidgets.Widget {
    * Manage autoplay lifetime and trigger next function.
    */
   autoPlay() {
+    if (!this.timelapseState) return;
+
     // Stop autoPlay when reaching the end
     if (this.getCurrentSelectionIndex() === this.values.length - 1) {
       this.stopAutoPlay();
