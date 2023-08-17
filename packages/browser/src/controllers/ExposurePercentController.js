@@ -1,9 +1,10 @@
 import { THREE, itowns } from '@ud-viz/browser';
-import { SunlightView } from './SunlightView';
+import { AggregateController } from './AggregateController';
 
-export class ExposurePercentView extends SunlightView {
-  constructor() {
-    super();
+/* Aggregate Controller responsible of exposurePercent aggregate */
+export class ExposurePercentController extends AggregateController {
+  constructor(config3DTiles) {
+    super(config3DTiles);
   }
 
   getStyle() {

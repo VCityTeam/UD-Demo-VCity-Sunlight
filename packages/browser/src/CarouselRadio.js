@@ -1,4 +1,9 @@
-import { itownsWidgets, createLabelInput, THREE } from '@ud-viz/browser';
+import {
+  itownsWidgets,
+  createLabelInput,
+  THREE,
+  clearChildren,
+} from '@ud-viz/browser';
 
 const DEFAULT_OPTIONS = {
   position: '',
@@ -25,12 +30,29 @@ export class CarouselRadio extends itownsWidgets.Widget {
    *
    * @param {itowns.View} itownsView - itowns view
    * @param {object} options - options
-   * @param {HTMLElement} options.radiosValues - map of all values displayed (key is used for identifier and value for label text)
+   * @param {Array.<string>} options.choices - Array of all values displayed (index is used for identifier and value for label text)
    * @param {HTMLElement} options.parentElement - parent element of the widget
    */
   constructor(itownsView, options) {
     super(itownsView, options, DEFAULT_OPTIONS);
 
+    this.createHTMLStructure();
+
+    // Create all radios
+    if (options.choices) {
+      this.setChoices(options.choices);
+    }
+
+    // Autoplay configuration to play a timelapse
+    this.autoPlayInterval = null;
+    this.autoPlayTimeInMs = 2000;
+  }
+
+  /**
+   * The function creates the HTML structure for a carousel component with previous and next buttons,
+   * radio inputs, and a play button.
+   */
+  createHTMLStructure() {
     this.domElement.classList.add('carousel-container');
 
     // Create previous button
@@ -43,29 +65,6 @@ export class CarouselRadio extends itownsWidgets.Widget {
     this.radioContainer = document.createElement('div');
     this.radioContainer.classList.add('carousel-radios-container');
     this.domElement.appendChild(this.radioContainer);
-
-    // Group all labels under one name / one section
-    const groupName = THREE.MathUtils.generateUUID();
-
-    // Create all radios
-    this.values = JSON.parse(options.radiosValues);
-    this.values.forEach((labelText, index) => {
-      const labelInput = createLabelInput(labelText, 'radio');
-      labelInput.parent.classList.add('radio-group');
-      labelInput.parent.classList.add('custom-btn');
-
-      labelInput.input.setAttribute('value', index);
-      labelInput.input.setAttribute('name', groupName);
-      labelInput.input.addEventListener('click', (event) =>
-        this.onRadioClick(event)
-      );
-
-      this.radioContainer.appendChild(labelInput.parent);
-
-      // Autoplay configuration to play a timelapse
-      this.autoPlayInterval = null;
-      this.autoPlayTimeInMs = 2000;
-    });
 
     // Create next button
     const nextButton = document.createElement('button');
@@ -89,15 +88,47 @@ export class CarouselRadio extends itownsWidgets.Widget {
         this.autoPlayTimeInMs
       );
     });
+
     this.domElement.appendChild(autoPlayButton);
   }
 
   /**
-   * Set current choices by a given index.
+   * The `setChoices` function sets the choices for a radio button group and creates the corresponding
+   * input radio elements.
+   *
+   * @param {Array.<string>} choices - An array of strings representing the choices for the radio buttons.
+   */
+  setChoices(choices) {
+    this.values = choices;
+
+    // Remove previous choices / children
+    clearChildren(this.radioContainer);
+
+    // Group all labels under one name / one section
+    const groupName = THREE.MathUtils.generateUUID();
+
+    // Create an input radio for each choice
+    this.values.forEach((labelText, index) => {
+      const labelInput = createLabelInput(labelText, 'radio');
+      labelInput.parent.classList.add('radio-group');
+      labelInput.parent.classList.add('custom-btn');
+
+      labelInput.input.setAttribute('value', index);
+      labelInput.input.setAttribute('name', groupName);
+      labelInput.input.addEventListener('click', (event) =>
+        this.onRadioClick(event)
+      );
+
+      this.radioContainer.appendChild(labelInput.parent);
+    });
+  }
+
+  /**
+   * Trigger choice by a given index.
    *
    * @param {index} index - Radio index
    */
-  setChoice(index) {
+  triggerChoice(index) {
     // Trigger click event on the new input
     const inputs = this.radioContainer.querySelectorAll('input');
     inputs[index].click();
@@ -124,7 +155,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
     let selectionIndex = this.getCurrentSelectionIndex() + 1;
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
-    this.setChoice(selectionIndex);
+    this.triggerChoice(selectionIndex);
   }
 
   /**
@@ -137,7 +168,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
     let selectionIndex = parseInt(this.getCurrentSelectionIndex()) - 1;
     selectionIndex = clamp(selectionIndex, 0, this.values.length - 1);
 
-    this.setChoice(selectionIndex);
+    this.triggerChoice(selectionIndex);
   }
 
   /**

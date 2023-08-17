@@ -7,16 +7,17 @@ import {
 } from '@ud-viz/browser';
 
 import { CarouselRadio } from './CarouselRadio';
-import { ExposurePercentView } from './views/ExposurePercentView';
-import { SunlightView } from './views/SunlightView';
+import { ExposurePercentController } from './controllers/ExposurePercentController';
+import { SunlightController } from './controllers/SunlightController';
 import { Time } from './utils/Time';
 
 export class MyApplication {
   constructor() {
     this.extent = null;
     this.frame3DPlanar = null;
-
     this.domElement = document.createElement('div');
+
+    this.config3DTiles = this.formatConfig3DTiles();
 
     // Add Layer infos to update style only on one layer
     this.currentSelection = {
@@ -27,7 +28,7 @@ export class MyApplication {
 
     this.selectionWidget = null;
     this.timeline = null;
-    this.view = new SunlightView();
+    this.controller = new SunlightController(this.config3DTiles);
   }
 
   start() {
@@ -35,8 +36,8 @@ export class MyApplication {
     this.initFrame3D();
     this.init3DTiles();
     this.initUI();
-    this.applyViewStyle();
     this.registerToSelectionEvents();
+    this.updateView();
   }
 
   initItownsExtent() {
@@ -80,10 +81,10 @@ export class MyApplication {
    * Get all 3dTiles for several timestamp. Each element corresponds to
    * a sunlight result at a given timestamp.
    *
-   * @returns Config array of 3DTiles
+   * @returns {config3DTiles} Config array of 3DTiles
    */
-  getConfigByHours() {
-    return [
+  formatConfig3DTiles() {
+    const config = [
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
@@ -125,70 +126,24 @@ export class MyApplication {
         color: '0xFFFFFF',
       },
     ];
-  }
 
-  /**
-   * The function `getConfigByDays` extracts unique elements from a configuration array based on their
-   * date and sorts them in ascending order.
-   *
-   * @returns an array of objects that have been sorted by the "url" property.
-   */
-  getConfigByDays() {
-    const config = this.getConfigByHours();
-    const registeredDates = [];
+    // Add date from the url in each config3DTiles that will be used accross all application
     const output = [];
-
     config.forEach((element) => {
-      // Day already registered
-      const currentDate = Time.extractDateAndHours(element.url);
-      if (!currentDate || registeredDates.includes(currentDate)) {
-        return;
+      const date = Time.extractDateAndHours(element.url);
+      if (date) {
+        element.date = date;
+        output.push(element);
       }
-
-      registeredDates.push(currentDate.getDate());
-      output.push(element);
     });
-
-    // https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value/16174180#comment31549267_1129270
-    output.sort((a, b) => a.url - b.url);
-
-    return output;
-  }
-
-  /**
-   * The function `getConfigByMonths` extracts the month from each element's URL in the config array,
-   * removes duplicates, sorts the elements by month, and returns the sorted array.
-   *
-   * @returns an array of objects that have been sorted by the "url" property in ascending order.
-   */
-  getConfigByMonths() {
-    const config = this.getConfigByHours();
-    const registeredDates = [];
-    const output = [];
-
-    config.forEach((element) => {
-      // Day already registered
-      const currentDate = Time.extractDateAndHours(element.url);
-      if (!currentDate || registeredDates.includes(currentDate.getMonth())) {
-        return;
-      }
-
-      registeredDates.push(currentDate.getMonth());
-      output.push(element);
-    });
-
-    // https://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value/16174180#comment31549267_1129270
-    output.sort((a, b) => a.url - b.url);
 
     return output;
   }
 
   init3DTiles() {
     // ADD 3D LAYERS
-    const getConfigByHourss = this.getConfigByHours();
-
     add3DTilesLayers(
-      [getConfigByHourss[0]],
+      [this.config3DTiles[0]],
       this.frame3DPlanar.getItownsView()
     );
   }
@@ -211,7 +166,7 @@ export class MyApplication {
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
 
     // Apply light style on new 3DTiles
-    this.applyViewStyle();
+    this.applyStyle();
     this.frame3DPlanar.getItownsView().notifyChange();
   }
 
@@ -239,41 +194,11 @@ export class MyApplication {
     bottomContainer.appendChild(butonSwitchView);
 
     // Add timelapse radios
-
-    // Sample datas only for testing purpose.
-    const dates = [];
-    const getConfigByHours = this.getConfigByHours();
-    getConfigByHours.forEach((element) => {
-      const date = Time.formatForDisplay(element.url);
-      if (!date) {
-        return;
-      }
-
-      dates.push(date);
-    });
-    const jsonDates = JSON.stringify(dates);
-
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
       parentElement: bottomContainer,
-      radiosValues: jsonDates,
     });
 
     this.frame3DPlanar.appendToUI(this.domElement);
-  }
-
-  /**
-   * Update style based on batch table and Sunlight result.
-   */
-  applyViewStyle() {
-    this.frame3DPlanar
-      .getItownsView()
-      .getLayers()
-      .filter((el) => el.isC3DTilesLayer)
-      .forEach((layer) => {
-        layer.style = this.view.getStyle();
-      });
-
-    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   /**
@@ -379,12 +304,39 @@ export class MyApplication {
   }
 
   switchView() {
-    this.view =
-      this.view instanceof ExposurePercentView
-        ? new SunlightView()
-        : new ExposurePercentView();
+    this.controller =
+      this.controller instanceof ExposurePercentController
+        ? new SunlightController(this.config3DTiles)
+        : new ExposurePercentController(this.config3DTiles);
 
-    this.applyViewStyle();
+    this.updateView();
+  }
+
+  /**
+   * The function updates the view by applying styles and updating the timeline based on the controller.
+   */
+  updateView() {
+    this.applyStyle();
+
+    // Update Timeline
+    const dates = this.controller.getDisplayedDates();
+    this.timeline.setChoices(dates);
+  }
+
+  /**
+   * The function applies the current controller style to all C3DTiles
+   * layers in a 3D planar frame and notifies the view of the change.
+   */
+  applyStyle() {
+    this.frame3DPlanar
+      .getItownsView()
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        layer.style = this.controller.getStyle();
+      });
+
+    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   /**
@@ -397,8 +349,8 @@ export class MyApplication {
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      const getConfigByHours = this.getConfigByHours()[event.detail];
-      this.replace3DTiles([getConfigByHours]);
+      const newConfig = this.controller.getConfigAt(event.detail);
+      this.replace3DTiles([newConfig]);
     });
 
     // Switch view
