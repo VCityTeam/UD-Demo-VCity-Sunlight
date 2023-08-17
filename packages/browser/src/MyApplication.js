@@ -7,13 +7,17 @@ import {
 } from '@ud-viz/browser';
 
 import { CarouselRadio } from './CarouselRadio';
+import { ExposurePercentController } from './controllers/ExposurePercentController';
+import { SunlightController } from './controllers/SunlightController';
+import { Time } from './utils/Time';
 
 export class MyApplication {
   constructor() {
     this.extent = null;
     this.frame3DPlanar = null;
-
     this.domElement = document.createElement('div');
+
+    this.config3DTiles = this.formatConfig3DTiles();
 
     // Add Layer infos to update style only on one layer
     this.currentSelection = {
@@ -24,15 +28,16 @@ export class MyApplication {
 
     this.selectionWidget = null;
     this.timeline = null;
+    this.filterCarousel = null;
+    this.controller = new SunlightController(this.config3DTiles);
   }
 
   start() {
     this.initItownsExtent();
     this.initFrame3D();
-    this.init3DTiles();
     this.initUI();
-    this.applyLightStyle();
     this.registerToSelectionEvents();
+    this.updateView();
   }
 
   initItownsExtent() {
@@ -76,66 +81,69 @@ export class MyApplication {
    * Get all 3dTiles for several timestamp. Each element corresponds to
    * a sunlight result at a given timestamp.
    *
-   * @returns Config array of 3DTiles
+   * @returns {config3DTiles} Config array of 3DTiles
    */
-  getConfig3DTiles() {
-    return [
+  formatConfig3DTiles() {
+    const config = [
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
         color: '0xFFFFFF',
-        date: '08H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__0900/tileset.json',
         color: '0xFFFFFF',
-        date: '09H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1000/tileset.json',
-        color: '0xFFFFFF',
-        date: '10H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1100/tileset.json',
-        color: '0xFFFFFF',
-        date: '11H',
-      },
-      {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1200/tileset.json',
-        color: '0xFFFFFF',
-        date: '12H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1300/tileset.json',
         color: '0xFFFFFF',
-        date: '13H',
       },
       {
         id: 'Hotel-Police',
         url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
         color: '0xFFFFFF',
-        date: '14H',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-02__0900/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-01-02__1400/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-02-01__0900/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Hotel-Police',
+        url: '../assets/Hotel-Police/2016-02-01__1400/tileset.json',
+        color: '0xFFFFFF',
       },
     ];
-  }
 
-  init3DTiles() {
-    // ADD 3D LAYERS
-    const config3DTiles = this.getConfig3DTiles();
+    // Add date from the url in each config3DTiles that will be used accross all application
+    const output = [];
+    config.forEach((element) => {
+      const date = Time.extractDateAndHours(element.url);
+      if (date) {
+        element.date = date;
+        output.push(element);
+      }
+    });
 
-    add3DTilesLayers([config3DTiles[0]], this.frame3DPlanar.getItownsView());
+    return output;
   }
 
   /**
    * Replace old 3d tiles by new 3DTiles after the date changed.
    *
-   * @param {config3DTilesLayers} config3DTiles - An object containing 3DTiles layers configs
+   * @param {config3DTiles} config3DTiles - An object containing 3DTiles layers configs
    */
   replace3DTiles(config3DTiles) {
     // Remove previous 3DTiles because we change the timestamp
@@ -150,7 +158,7 @@ export class MyApplication {
     add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
 
     // Apply light style on new 3DTiles
-    this.applyLightStyle();
+    this.applyStyle();
     this.frame3DPlanar.getItownsView().notifyChange();
   }
 
@@ -165,54 +173,37 @@ export class MyApplication {
     });
     this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
 
+    // Bottom container containing all main buttons
+    const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('bottom-widget');
+    bottomContainer.classList.add('bottom-container');
+    this.domElement.appendChild(bottomContainer);
+
+    // Switch view
+    const buttonSwitchView = document.createElement('button');
+    buttonSwitchView.innerText = 'Switch View';
+    buttonSwitchView.classList.add('btn-switch-view');
+    buttonSwitchView.classList.add('custom-btn');
+    bottomContainer.appendChild(buttonSwitchView);
+
+    // Filter and date selection container
+    const selectionContainer = document.createElement('div');
+    selectionContainer.classList.add('date-selection-container');
+    bottomContainer.appendChild(selectionContainer);
+
+    // Group by buttons
+    this.filterCarousel = new CarouselRadio(
+      this.frame3DPlanar.getItownsView(),
+      { parentElement: selectionContainer }
+    );
+
     // Add timelapse radios
-
-    // Sample datas only for testing purpose.
-    const dates = [];
-    const config3DTiles = this.getConfig3DTiles();
-    config3DTiles.forEach((element, index) => {
-      dates.push(element.date);
-    });
-    const jsonDates = JSON.stringify(dates);
-
     this.timeline = new CarouselRadio(this.frame3DPlanar.getItownsView(), {
-      parentElement: this.domElement,
-      radiosValues: jsonDates,
+      parentElement: selectionContainer,
+      timelapseState: true,
     });
 
     this.frame3DPlanar.appendToUI(this.domElement);
-  }
-
-  /**
-   *
-   * Update style based on batch table and Sunlight result.
-   * Blue : feature is currently selected.
-   * Red : feature is occulting the feature selected.
-   * Yellow : feature is in the light.
-   * Black : feature is in the shadow.
-   */
-  applyLightStyle() {
-    const myStyle = new itowns.Style({
-      fill: {
-        color: function (feature) {
-          if (feature.userData.isSelected) return 'blue';
-          if (feature.userData.isOcculting) return 'red';
-
-          if (feature.getInfo().batchTable.bLighted) return 'yellow';
-
-          return 'black';
-        },
-      },
-    });
-
-    // Apply style to layers
-    this.frame3DPlanar
-      .getItownsView()
-      .getLayers()
-      .filter((el) => el.isC3DTilesLayer)
-      .forEach((layer) => {
-        layer.style = myStyle;
-      });
   }
 
   /**
@@ -318,6 +309,57 @@ export class MyApplication {
   }
 
   /**
+   * The switchView function switches between two different controllers and updates the view.
+   */
+  switchView() {
+    this.controller =
+      this.controller instanceof ExposurePercentController
+        ? new SunlightController(this.config3DTiles)
+        : new ExposurePercentController(this.config3DTiles);
+
+    this.updateView();
+  }
+
+  /**
+   * The function updates the view by applying styles and updating the timeline based on the controller.
+   */
+  updateView() {
+    this.applyStyle();
+
+    // Update filters
+    const filters = this.controller.getFiltersName();
+    this.filterCarousel.setChoices(filters);
+    this.filterCarousel.triggerChoice(0);
+
+    this.updateTimeline();
+  }
+
+  /**
+   * The function applies the current controller style to all C3DTiles
+   * layers in a 3D planar frame and notifies the view of the change.
+   */
+  applyStyle() {
+    this.frame3DPlanar
+      .getItownsView()
+      .getLayers()
+      .filter((el) => el.isC3DTilesLayer)
+      .forEach((layer) => {
+        layer.style = this.controller.getStyle();
+      });
+
+    this.frame3DPlanar.getItownsView().notifyChange();
+  }
+
+  /**
+   * Update the timeline with the displayed dates obtained from the controller.
+   */
+  updateTimeline() {
+    const dates = this.controller.getDisplayedDates();
+    this.timeline.setChoices(dates);
+    this.timeline.triggerChoice(0);
+  }
+
+  /**
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
   registerToSelectionEvents() {
@@ -325,10 +367,21 @@ export class MyApplication {
       .getRootWebGL()
       .addEventListener('click', (event) => this.updateSelection(event));
 
+    // Apply filters on controller
+    this.filterCarousel.radioContainer.addEventListener('onselect', (event) => {
+      this.controller.applyFilter(event.detail);
+      this.updateTimeline();
+    });
+
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      const config3DTile = this.getConfig3DTiles()[event.detail];
-      this.replace3DTiles([config3DTile]);
+      const newConfig = this.controller.getConfigAt(event.detail);
+      this.replace3DTiles([newConfig]);
     });
+
+    // Switch view
+    document
+      .querySelector('.btn-switch-view')
+      .addEventListener('click', (event) => this.switchView());
   }
 }
