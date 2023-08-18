@@ -17,20 +17,17 @@ body {
   overflow: hidden;
 }
 
+/* ============================== Font Settings ============================== */
 .ui_Frame3DBase,
 .ui_Frame3DBase button {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
     'Lucida Sans', Arial, sans-serif;
-  font-size: 20px;
+  font-size: var(--title-size);
 }
 
-/* ============================== Font Settings ============================== */
 h1 {
   font-size: var(--title-size);
   color: var(--secondary-color);
-  padding: 0 10px;
-  position: absolute;
-  z-index: 2;
 }
 
 h2 {
@@ -61,6 +58,18 @@ h2 {
   cursor: default;
 }
 
+/* ============================== Title ============================== */
+h1 {
+  position: absolute;
+  z-index: 2;
+  color: var(--primary-color);
+  background-color: var(--secondary-color-transparent);
+  padding: 20px;
+  margin: 0;
+  /* Do not add a border radius to the corner of the window, as this will create an offset. */
+  border-radius: 0 0 var(--border-radius) 0;
+}
+
 /* ============================== Selection Widget ============================== */
 #widgets-3dtiles {
   position: fixed;
@@ -76,9 +85,8 @@ h2 {
 }
 
 .widgets-3dtiles-feature-container {
-  /* Do not add a border radius in the top-right corner, as this will offset the top-right corner of the window. */
-  border-radius: var(--border-radius) 0 var(--border-radius)
-    var(--border-radius);
+  /* Do not add a border radius to the corner of the window, as this will create an offset. */
+  border-radius: 0 0 0 var(--border-radius);
   padding: 20px;
   background-color: var(--secondary-color-transparent);
   color: var(--primary-color);
@@ -183,9 +191,8 @@ h2 {
   color: var(--primary-color);
   background-color: var(--secondary-color-transparent);
   border-radius: var(--border-radius);
-  /* Do not add a border radius in the bottom-right corner, as this will offset the bottom-right corner of the window. */
-  border-radius: var(--border-radius) var(--border-radius) 0
-    var(--border-radius);
+  /* Do not add a border radius to the corner of the window, as this will create an offset. */
+  border-radius: var(--border-radius) 0 0 0;
 }
 
 .legend-container h2 {
