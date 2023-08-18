@@ -5,6 +5,7 @@
   --primary-color-transparent: rgba(255, 255, 255, 0.75);
   --secondary-color: rgb(30, 30, 30);
   --secondary-color-transparent: rgba(30, 30, 30, 0.5);
+  --title-size: 22px;
 }
 
 body {
@@ -17,6 +18,15 @@ body {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
     'Lucida Sans', Arial, sans-serif;
   font-size: 20px;
+}
+
+/* ============================== Font Settings ============================== */
+h1 {
+  font-size: var(--title-size);
+  padding: 0 10px;
+  color: var(--secondary-color);
+  position: absolute;
+  z-index: 2;
 }
 
 /* ============================== Custom Button Style ============================== */

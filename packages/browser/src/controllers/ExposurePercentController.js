@@ -8,6 +8,14 @@ export class ExposurePercentController extends AggregateController {
     super(config3DTiles);
   }
 
+  getTitle() {
+    if (this.timeScale == TimeScales.Day) {
+      return 'Sunlight exposure by day';
+    }
+
+    return 'Sunlight exposure by month';
+  }
+
   /**
    * The function returns a style object that determines the fill color of a feature based on its
    * monthly or daily exposure percentage.
@@ -20,6 +28,10 @@ export class ExposurePercentController extends AggregateController {
       return new itowns.Style({
         fill: {
           color: function (feature) {
+            // Selection style
+            if (feature.userData.isSelected) return 'green';
+            if (feature.userData.isOcculting) return 'pink';
+
             const alpha =
               feature.getInfo().batchTable.monthlyExposurePercent / 100;
 

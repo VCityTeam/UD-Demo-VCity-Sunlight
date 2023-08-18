@@ -3,10 +3,10 @@ import {
   add3DTilesLayers,
   itowns,
   proj4,
-  Widget,
 } from '@ud-viz/browser';
 
-import { CarouselRadio } from './CarouselRadio';
+import { RaySelection } from './components/RaySelection';
+import { CarouselRadio } from './components/CarouselRadio';
 import { ExposurePercentController } from './controllers/ExposurePercentController';
 import { SunlightController } from './controllers/SunlightController';
 import { Time } from './utils/Time';
@@ -15,28 +15,20 @@ export class MyApplication {
   constructor() {
     this.extent = null;
     this.frame3DPlanar = null;
-    this.domElement = document.createElement('div');
 
     this.config3DTiles = this.formatConfig3DTiles();
 
-    // Add Layer infos to update style only on one layer
-    this.currentSelection = {
-      feature: null,
-      occultingFeature: null,
-      layer: null,
-    };
-
-    this.selectionWidget = null;
     this.timeline = null;
     this.filterCarousel = null;
     this.controller = new SunlightController(this.config3DTiles);
+    this.raySelection = null;
   }
 
   start() {
     this.initItownsExtent();
     this.initFrame3D();
     this.initUI();
-    this.registerToSelectionEvents();
+    this.registersToEvents();
     this.updateView();
   }
 
@@ -163,21 +155,15 @@ export class MyApplication {
   }
 
   initUI() {
-    // Add selection widget
-    this.selectionWidget = new Widget.C3DTiles(this.frame3DPlanar.itownsView, {
-      overrideStyle: new itowns.Style({ fill: { color: 'white' } }),
-      parentElement: this.domElement,
-      layerContainerClassName: 'widgets-3dtiles-layer-container',
-      c3DTFeatureInfoContainerClassName: 'widgets-3dtiles-feature-container',
-      urlContainerClassName: 'widgets-3dtiles-url-container',
-    });
-    this.selectionWidget.domElement.setAttribute('id', 'widgets-3dtiles');
+    // Add title
+    const title = document.createElement('h1');
+    this.frame3DPlanar.appendToUI(title);
 
     // Bottom container containing all main buttons
     const bottomContainer = document.createElement('div');
     bottomContainer.classList.add('bottom-widget');
     bottomContainer.classList.add('bottom-container');
-    this.domElement.appendChild(bottomContainer);
+    this.frame3DPlanar.appendToUI(bottomContainer);
 
     // Switch view
     const buttonSwitchView = document.createElement('button');
@@ -194,7 +180,7 @@ export class MyApplication {
     // Group by buttons
     this.filterCarousel = new CarouselRadio(
       this.frame3DPlanar.getItownsView(),
-      { parentElement: selectionContainer }
+      { parentElement: selectionContainer /* title: 'Filters'*/ }
     );
 
     // Add timelapse radios
@@ -203,109 +189,8 @@ export class MyApplication {
       timelapseState: true,
     });
 
-    this.frame3DPlanar.appendToUI(this.domElement);
-  }
-
-  /**
-   * Reset and dispose current selection
-   */
-  resetSelection() {
-    if (this.currentSelection.feature) {
-      // reset feature userData
-      this.currentSelection.feature.userData.isSelected = false;
-      // and update style of its layer
-      this.currentSelection.layer.updateStyle();
-      // reset context selection
-      this.currentSelection.feature = null;
-      this.currentSelection.layer = null;
-
-      // Reset occulting feature state
-      if (this.currentSelection.occultingFeature)
-        this.currentSelection.occultingFeature.userData.isOcculting = false;
-
-      this.currentSelection.occultingFeature = null;
-    }
-  }
-
-  /**
-   * Get feature from the occulting id.
-   * An occulting id follow these format : 'Tile-tiles/0.b3dm__Feature-0__Triangle-823'
-   *
-   * @param {itowns.C3DTilesLayer} layer 3DTiles layer containing all features.
-   * @param {string} occultingId Occulting id use to search an element.
-   * @returns Feature present in the layer.
-   */
-  getFeatureByOccultingId(layer, occultingId) {
-    // Check if the input string matches the expected format
-    const formatRegex = /^Tile-tiles\/\d+\.b3dm__Feature-\d+__Triangle-\d+$/;
-    if (!formatRegex.test(occultingId)) {
-      console.log(
-        'Occulting id does not follow the expected format : ' + occultingId
-      );
-      return null;
-    }
-
-    // Extract the number before "b3dm"
-    let tileIndex = occultingId.match(/(\d+)\.b3dm/);
-    // +1 because itowns tiles start at 1
-    tileIndex = parseInt(tileIndex[1] + 1);
-
-    // Extract the last number in the string
-    let featureId = occultingId.match(/(\d+)$/);
-    featureId = parseInt(featureId[1]);
-
-    return layer.tilesC3DTileFeatures.get(tileIndex).get(featureId);
-  }
-
-  /**
-   * Set the current feature and layer selected by the user.
-   *
-   * @param event
-   */
-  updateSelection(event) {
-    this.resetSelection();
-
-    // get intersects based on the click event
-    const intersects = this.frame3DPlanar.getItownsView().pickObjectsAt(
-      event,
-      0,
-      this.frame3DPlanar
-        .getItownsView()
-        .getLayers()
-        .filter((el) => el.isC3DTilesLayer)
-    );
-    if (intersects.length) {
-      // get featureClicked
-      const featureClicked =
-        intersects[0].layer.getC3DTileFeatureFromIntersectsArray(intersects);
-      if (featureClicked) {
-        this.currentSelection.feature = featureClicked;
-        this.currentSelection.layer = intersects[0].layer;
-
-        // Change occulting feature state to display information about it
-        if (!featureClicked.getInfo().batchTable.bLighted) {
-          this.currentSelection.occultingFeature = this.getFeatureByOccultingId(
-            this.currentSelection.layer,
-            this.currentSelection.feature.getInfo().batchTable.blockerId
-          );
-
-          this.currentSelection.occultingFeature.userData.isOcculting = true;
-        }
-
-        // Update layer to display current selection
-        this.currentSelection.feature.userData.isSelected = true;
-        this.currentSelection.layer.updateStyle();
-      }
-    }
-
-    // Update widget displayed info
-    this.selectionWidget.displayC3DTFeatureInfo(
-      this.currentSelection.feature,
-      this.currentSelection.layer
-    );
-
-    // Redraw the current view
-    this.frame3DPlanar.getItownsView().notifyChange();
+    // Ray selection on feature
+    this.raySelection = new RaySelection(this.frame3DPlanar);
   }
 
   /**
@@ -332,6 +217,8 @@ export class MyApplication {
     this.filterCarousel.triggerChoice(0);
 
     this.updateTimeline();
+
+    this.updateTitle();
   }
 
   /**
@@ -360,17 +247,21 @@ export class MyApplication {
   }
 
   /**
+   * Update title page based on controller title.
+   */
+  updateTitle() {
+    document.querySelector('h1').innerText = this.controller.getTitle();
+  }
+
+  /**
    * Register to all selection events from the user (feature selected, timelapse played...).
    */
-  registerToSelectionEvents() {
-    this.frame3DPlanar
-      .getRootWebGL()
-      .addEventListener('click', (event) => this.updateSelection(event));
-
+  registersToEvents() {
     // Apply filters on controller
     this.filterCarousel.radioContainer.addEventListener('onselect', (event) => {
       this.controller.applyFilter(event.detail);
       this.updateTimeline();
+      this.updateTitle();
     });
 
     // Switch 3DTiles with a new timestamp
