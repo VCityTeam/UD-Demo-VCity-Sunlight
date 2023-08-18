@@ -23,10 +23,14 @@ body {
 /* ============================== Font Settings ============================== */
 h1 {
   font-size: var(--title-size);
-  padding: 0 10px;
   color: var(--secondary-color);
+  padding: 0 10px;
   position: absolute;
   z-index: 2;
+}
+
+h2 {
+  font-size: var(--title-size);
 }
 
 /* ============================== Custom Button Style ============================== */
@@ -119,14 +123,14 @@ h1 {
 .carousel-radios-container {
   display: flex;
   overflow: clip;
-  max-width:60%;
+  max-width: 60%;
   background: var(--primary-color-transparent);
   padding: 10px 10px 14px 10px;
   border-radius: var(--border-radius);
 }
 
 /* Carousels radios */
-.radio-group{
+.radio-group {
   margin: 0 10px;
 }
 
@@ -148,17 +152,62 @@ h1 {
 }
 
 /* Navigation and play back buttons */
-.carousel-container .carousel-navigation-button, .carousel-container .auto-play-button
-{
-  border:none;
-  padding:2px 0 0 0;
+.carousel-container .carousel-navigation-button,
+.carousel-container .auto-play-button {
+  border: none;
+  padding: 2px 0 0 0;
 
   /* Create perfect Circle */
-  width:50px;
+  width: 50px;
   height: 50px;
   border-radius: 25px;
 }
 
-.carousel-container .auto-play-button{
-  padding-left:4px
+.carousel-container .auto-play-button {
+  padding-left: 4px;
+}
+
+/* ============================== Legend Widget ============================== */
+.legend-container {
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 20%;
+  padding: 1%;
+  color: var(--primary-color);
+  background-color: var(--secondary-color-transparent);
+  border-radius: var(--border-radius);
+  /* Do not add a border radius in the bottom-right corner, as this will offset the bottom-right corner of the window. */
+  border-radius: var(--border-radius) var(--border-radius) 0
+    var(--border-radius);
+}
+
+.legend-container h2 {
+  margin-top: 0;
+}
+
+.legend-item {
+  margin-left: 5%;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 4%;
+}
+
+.legend-label {
+  font-size: 80%;
+  color: var((--primary-color));
+  margin-left: 3%;
+}
+
+.legend-container .box {
+  width: 20px;
+  height: 20px;
+  display: block;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius);
 }

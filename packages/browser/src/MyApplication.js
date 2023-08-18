@@ -191,6 +191,10 @@ export class MyApplication {
 
     // Ray selection on feature
     this.raySelection = new RaySelection(this.frame3DPlanar);
+
+    const legendContainer = document.createElement('div');
+    legendContainer.className = 'legend-container';
+    this.frame3DPlanar.appendToUI(legendContainer);
   }
 
   /**
@@ -219,6 +223,10 @@ export class MyApplication {
     this.updateTimeline();
 
     this.updateTitle();
+
+    // Update legend
+    const legendContainer = document.querySelector('.legend-container');
+    legendContainer.innerHTML = this.controller.getLegendView();
   }
 
   /**
