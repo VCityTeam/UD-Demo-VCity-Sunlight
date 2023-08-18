@@ -75,4 +75,26 @@ export class ExposurePercentController extends AggregateController {
       this.switchScale(TimeScales.Month);
     }
   }
+
+  getLegendView() {
+    return `
+              <h2>Legend</h2>
+              
+              <div class="legend-item">
+                <span class='box' style='background-color:green'></span>
+                <div class="legend-label">Select Feature</div>
+              </div>
+              <div class="legend-item">
+                <span class='box' style='background-color:pink'></span>
+                <div class="legend-label">Occluder Feature</div>
+              </div>
+
+              <div class="legend-item gradient-item">
+                <span class='box' style='background:linear-gradient(0deg, rgba(255,222,0,1) 0%, rgba(210,0,26,1) 100%)'></span>
+                <div class="legend-label">
+                  <p>Often Illuminated</p>
+                  <p>Often Shaded</p>
+                </div>
+              </div>`;
+  }
 }

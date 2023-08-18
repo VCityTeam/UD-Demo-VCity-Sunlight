@@ -145,7 +145,7 @@ export class SunlightController {
                 <div class="legend-label">Select Feature</div>
               </div>
               <div class="legend-item">
-              <span class='box' style='background-color:pink'></span>
+                <span class='box' style='background-color:pink'></span>
                 <div class="legend-label">Occluder Feature</div>
               </div>`;
   }
