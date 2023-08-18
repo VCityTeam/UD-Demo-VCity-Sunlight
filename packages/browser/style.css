@@ -108,21 +108,35 @@ h1 {
 }
 
 .carousel-container {
-  text-align: center;
-  padding: 15px 0;
+  width: 100%;
   display: flex;
+  text-align: center;
+  overflow: hidden;
   align-items: center;
+  /* padding: 15px 0;
+  display: flex; */
 }
 
 .carousel-radios-container {
-  overflow: clip;
+  /* overflow: clip;
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 50%;
   background: var(--primary-color-transparent);
   padding: 10px;
-  border-radius: var(--border-radius);
+  border-radius: var(--border-radius); */
+}
+
+.carousel-container .carousel-navigation-button
+{
+  border:none;
+  padding:2px 0 0 0;
+
+  /* Create perfect Circle */
+  width:35px;
+  height: 35px;
+  border-radius: 20px;
 }
 
 .radio-group:hover,
