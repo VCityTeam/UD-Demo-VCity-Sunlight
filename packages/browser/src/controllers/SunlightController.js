@@ -121,4 +121,21 @@ export class SunlightController {
 
     return dates;
   }
+
+  /**
+   * The function `getLegendView()` returns a string containing HTML code for a legend view with
+   * color-coded labels.
+   *
+   * @returns {string} - a string that represents the HTML markup for a legend view.
+   */
+  getLegendView() {
+    return `<div class="legend-item">
+              <span class='box' style='background-color:yellow'></span>
+              <p class="legend-label">Sunny</p>
+            </div>
+            <div class="legend-item">
+            <span class='box' style='background-color:black'></span>
+              <p class="legend-label">Shadow</p>
+            </div>`;
+  }
 }

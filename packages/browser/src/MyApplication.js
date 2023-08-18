@@ -157,10 +157,12 @@ export class MyApplication {
   initUI() {
     // Add title
     const title = document.createElement('h1');
+    title.classList.add('container');
     this.frame3DPlanar.appendToUI(title);
 
     // Bottom container containing all main buttons
     const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('container');
     bottomContainer.classList.add('bottom-widget');
     bottomContainer.classList.add('bottom-container');
     this.frame3DPlanar.appendToUI(bottomContainer);
@@ -191,6 +193,11 @@ export class MyApplication {
 
     // Ray selection on feature
     this.raySelection = new RaySelection(this.frame3DPlanar);
+
+    const legendContainer = document.createElement('div');
+    legendContainer.classList.add('container');
+    legendContainer.classList.add('legend-container');
+    this.frame3DPlanar.appendToUI(legendContainer);
   }
 
   /**
@@ -219,6 +226,22 @@ export class MyApplication {
     this.updateTimeline();
 
     this.updateTitle();
+
+    // Update legend
+    const legendContainer = document.querySelector('.legend-container');
+
+    // Common legend between each view
+    legendContainer.innerHTML = `<h2>Legend</h2>
+                            
+                                <div class="legend-item">
+                                  <span class='box' style='background-color:green'></span>
+                                  <p class="legend-label">Select Feature</p>
+                                </div>
+                                <div class="legend-item">
+                                  <span class='box' style='background-color:pink'></span>
+                                  <p class="legend-label">Occluder Feature</p>
+                                </div>`;
+    legendContainer.innerHTML += this.controller.getLegendView();
   }
 
   /**
