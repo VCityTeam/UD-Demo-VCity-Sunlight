@@ -8,7 +8,7 @@ export class RaySelection {
    * Initializes the current selection, creates a selection widget, and adds
    * an event listener to update the selection on click.
    *
-   * @param {Frame3DPlanar} frame3DPlanar
+   * @param {Frame3DPlanar} frame3DPlanar - Frame3DPlanar containing 3D view and ui elements.
    */
   constructor(frame3DPlanar) {
     // Add Layer infos to update style only on one layer
@@ -47,7 +47,7 @@ export class RaySelection {
   /**
    * Set the current feature and layer selected by the user.
    *
-   * @param event
+   * @param {Event} event - HTML Event
    */
   updateSelection(event) {
     this.resetSelection();

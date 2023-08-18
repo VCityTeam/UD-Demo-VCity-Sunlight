@@ -73,7 +73,7 @@ export class MyApplication {
    * Get all 3dTiles for several timestamp. Each element corresponds to
    * a sunlight result at a given timestamp.
    *
-   * @returns {config3DTiles} Config array of 3DTiles
+   * @returns {object} Config array of 3DTiles
    */
   formatConfig3DTiles() {
     const config = [
@@ -135,7 +135,7 @@ export class MyApplication {
   /**
    * Replace old 3d tiles by new 3DTiles after the date changed.
    *
-   * @param {config3DTiles} config3DTiles - An object containing 3DTiles layers configs
+   * @param {object} config3DTiles - An object containing 3DTiles layers configs
    */
   replace3DTiles(config3DTiles) {
     // Remove previous 3DTiles because we change the timestamp
@@ -178,6 +178,10 @@ export class MyApplication {
     const selectionContainer = document.createElement('div');
     selectionContainer.classList.add('date-selection-container');
     bottomContainer.appendChild(selectionContainer);
+
+    const filterTitle = document.createElement('h2');
+    filterTitle.innerText = 'Filters';
+    selectionContainer.appendChild(filterTitle);
 
     // Group by buttons
     this.filterCarousel = new CarouselRadio(
@@ -296,6 +300,6 @@ export class MyApplication {
     // Switch view
     document
       .querySelector('.btn-switch-view')
-      .addEventListener('click', (event) => this.switchView());
+      .addEventListener('click', () => this.switchView());
   }
 }
