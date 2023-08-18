@@ -113,21 +113,23 @@ h1 {
   text-align: center;
   overflow: hidden;
   align-items: center;
+  margin: 10px;
 }
 
 .carousel-radios-container {
-  /* overflow: clip;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 50%;
+  overflow: clip;
+  max-width:60%;
   background: var(--primary-color-transparent);
-  padding: 10px;
-  border-radius: var(--border-radius); */
+  padding: 10px 10px 14px 10px;
+  border-radius: var(--border-radius);
 }
 
-
 /* Carousels radios */
+.radio-group{
+  margin: 0 10px;
+}
+
 .radio-group:hover,
 .radio-group label:hover {
   cursor: pointer;
