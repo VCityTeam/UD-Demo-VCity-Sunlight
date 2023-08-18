@@ -5,9 +5,9 @@
   --primary-color-transparent: rgba(255, 255, 255, 0.75);
   --secondary-color: rgb(30, 30, 30);
   --secondary-color-transparent: rgba(30, 30, 30, 0.5);
-  --title-size: 1.2rem;
-  --paragraph-size: 0.8rem;
-  --container-space: 1.5%;
+  --title-size: 1.3rem;
+  --paragraph-size: 1rem;
+  --container-space: 1vw;
   --small-space: calc(var(--container-space) / 2);
 }
 
@@ -181,14 +181,14 @@ h1 {
   padding: 0;
 
   /* Create perfect Circle */
-  width: 35px;
-  height: 35px;
-  border-radius: 18px;
+  width: 2vw;
+  height: 2vw;
+  border-radius: 1vw;
 }
 
 .carousel-container .carousel-navigation-button svg,
 .carousel-container .auto-play-button svg {
-  width: 1.2vw;
+  width: 0.9vw;
   height: auto;
   display: block;
   margin: auto;
