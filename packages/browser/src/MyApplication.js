@@ -157,10 +157,12 @@ export class MyApplication {
   initUI() {
     // Add title
     const title = document.createElement('h1');
+    title.classList.add('container');
     this.frame3DPlanar.appendToUI(title);
 
     // Bottom container containing all main buttons
     const bottomContainer = document.createElement('div');
+    bottomContainer.classList.add('container');
     bottomContainer.classList.add('bottom-widget');
     bottomContainer.classList.add('bottom-container');
     this.frame3DPlanar.appendToUI(bottomContainer);
@@ -193,7 +195,8 @@ export class MyApplication {
     this.raySelection = new RaySelection(this.frame3DPlanar);
 
     const legendContainer = document.createElement('div');
-    legendContainer.className = 'legend-container';
+    legendContainer.classList.add('container');
+    legendContainer.classList.add('legend-container');
     this.frame3DPlanar.appendToUI(legendContainer);
   }
 

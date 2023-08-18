@@ -5,7 +5,10 @@
   --primary-color-transparent: rgba(255, 255, 255, 0.75);
   --secondary-color: rgb(30, 30, 30);
   --secondary-color-transparent: rgba(30, 30, 30, 0.5);
-  --title-size: 22px;
+  --title-size: 1.2rem;
+  --paragraph-size: 0.8rem;
+  --container-space: 1.5%;
+  --small-space: calc(var(--container-space) / 2);
 }
 
 * {
@@ -17,19 +20,20 @@ body {
   overflow: hidden;
 }
 
+.container,
+.widgets-3dtiles-feature-container {
+  padding: var(--container-space);
+}
+
 /* ============================== Font Settings ============================== */
 .ui_Frame3DBase,
 .ui_Frame3DBase button {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande',
     'Lucida Sans', Arial, sans-serif;
-  font-size: var(--title-size);
+  font-size: var(--paragraph-size);
 }
 
-h1 {
-  font-size: var(--title-size);
-  color: var(--secondary-color);
-}
-
+h1,
 h2 {
   font-size: var(--title-size);
 }
@@ -64,7 +68,6 @@ h1 {
   z-index: 2;
   color: var(--primary-color);
   background-color: var(--secondary-color-transparent);
-  padding: 20px;
   margin: 0;
   /* Do not add a border radius to the corner of the window, as this will create an offset. */
   border-radius: 0 0 var(--border-radius) 0;
@@ -87,7 +90,6 @@ h1 {
 .widgets-3dtiles-feature-container {
   /* Do not add a border radius to the corner of the window, as this will create an offset. */
   border-radius: 0 0 0 var(--border-radius);
-  padding: 20px;
   background-color: var(--secondary-color-transparent);
   color: var(--primary-color);
 }
@@ -109,7 +111,7 @@ h1 {
   z-index: 2;
   bottom: 0;
   width: 80%;
-  column-gap: 20px;
+  column-gap: 2vw;
 }
 
 .bottom-container button {
@@ -123,27 +125,34 @@ h1 {
   width: 80%;
 }
 
+.bottom-container .carousel-container:last-of-type {
+  margin-top: var(--small-space);
+}
+
 .carousel-container {
   width: 100%;
   display: flex;
   text-align: center;
   overflow: hidden;
   align-items: center;
-  margin: 10px 0;
-  column-gap: 20px;
+  column-gap: 2vw;
 }
 
 .carousel-radios-container {
   display: flex;
   overflow: clip;
   max-width: 60%;
-  gap: 10px;
+  gap: 1vw;
   background: var(--primary-color-transparent);
-  padding: 10px 10px 14px 10px;
+  padding: var(--container-space);
   border-radius: var(--border-radius);
 }
 
 /* Carousels radios */
+.radio-group {
+  margin-bottom: 4px;
+}
+
 .radio-group:hover,
 .radio-group label:hover {
   cursor: pointer;
@@ -151,7 +160,7 @@ h1 {
 
 .radio-group label {
   display: inline-block;
-  padding: 10px 20px;
+  padding: 1vw 2vw;
 }
 
 .radio-group input {
@@ -165,16 +174,20 @@ h1 {
 .carousel-container .carousel-navigation-button,
 .carousel-container .auto-play-button {
   border: none;
-  padding: 2px 0 0 0;
+  padding: 0;
 
   /* Create perfect Circle */
-  width: 50px;
-  height: 50px;
-  border-radius: 25px;
+  width: 35px;
+  height: 35px;
+  border-radius: 18px;
 }
 
-.carousel-container .auto-play-button {
-  padding-left: 4px;
+.carousel-container .carousel-navigation-button svg,
+.carousel-container .auto-play-button svg {
+  width: 1.2vw;
+  height: auto;
+  display: block;
+  margin: auto;
 }
 
 /* ============================== Legend Widget ============================== */
@@ -187,10 +200,10 @@ h1 {
   flex-direction: column;
   justify-content: center;
   width: 20%;
-  padding: 1%;
   color: var(--primary-color);
   background-color: var(--secondary-color-transparent);
   border-radius: var(--border-radius);
+
   /* Do not add a border radius to the corner of the window, as this will create an offset. */
   border-radius: var(--border-radius) 0 0 0;
 }
@@ -215,8 +228,8 @@ h1 {
 
 .legend-container .box,
 .legend-container .gradient-box {
-  width: 20px;
-  height: 20px;
+  width: 1.2rem;
+  height: 1.2rem;
   display: block;
   background-color: var(--primary-color);
   border-radius: var(--border-radius);
@@ -224,7 +237,7 @@ h1 {
 
 /* Legend Gradients */
 .legend-item.gradient-item {
-  height: 100px;
+  height: 15vh;
 }
 
 .legend-item.gradient-item .box {
