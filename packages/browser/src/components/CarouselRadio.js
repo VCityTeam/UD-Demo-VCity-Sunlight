@@ -211,7 +211,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
   setTimelapseState(enabled) {
     // Show / Hide timelaspe autoplay button
     const autoPlayButton = this.domElement.querySelector('.auto-play-button');
-    autoPlayButton.setAttribute('display', enabled ? 'initial' : 'none');
+    autoPlayButton.style.display = enabled ? 'initial' : 'none';
 
     this.timelapseState = enabled;
   }
