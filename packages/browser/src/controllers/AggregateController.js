@@ -12,8 +12,8 @@ export class AggregateController extends SunlightController {
   /**
    * Get config3DTiles given an index of filtered config (by day or month).
    *
-   * @param {int} configIndex
-   * @returns {config3DTiles}
+   * @param {number} configIndex - Config index wanted by MyApplication.
+   * @returns {object} Config corresponding to the given config index.
    */
   getConfigAt(configIndex) {
     return this.filteredConfig[configIndex];
@@ -43,7 +43,7 @@ export class AggregateController extends SunlightController {
   /**
    * Filter `config3DTiles` array to get only one 3DTiles by day.
    *
-   * @returns {config3DTiles} an array of config3DTiles containing all aggregate.
+   * @returns {object} an array of config3DTiles containing all aggregate.
    */
   filterConfigByDays() {
     const registeredDates = [];
@@ -64,7 +64,7 @@ export class AggregateController extends SunlightController {
   /**
    * Filter `config3DTiles` array to get only one 3DTiles by month.
    *
-   * @returns {config3DTiles} an array of config3DTiles containing all aggregate.
+   * @returns {object} an array of config3DTiles containing all aggregate.
    */
   filterConfigByMonths() {
     const registeredDates = [];

@@ -46,8 +46,8 @@ export class SunlightController {
   /**
    * The getConfigs function return a config3DTiles given an index.
    *
-   * @param {int} index - Config index.
-   * @returns {config3DTiles} - Config3DTiles at a given idnex.
+   * @param {number} index - Config index.
+   * @returns {object} - Config3DTiles at a given idnex.
    */
   getConfigAt(index) {
     return this.config3DTiles[index];
@@ -76,7 +76,7 @@ export class SunlightController {
   /**
    * Apply filters on config3DTiles based on filter index.
    *
-   * @param {int} filterIndex - The filterIndex parameter is the index of the filter that you want to apply.
+   * @param {number} filterIndex - The filterIndex parameter is the index of the filter that you want to apply.
    * It is used to determine which filter to apply from the list of available 3DTiles.
    */
   applyFilter(filterIndex) {
