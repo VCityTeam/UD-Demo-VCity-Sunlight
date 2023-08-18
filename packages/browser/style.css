@@ -125,6 +125,10 @@ h1 {
   width: 80%;
 }
 
+.date-selection-container h2 {
+  margin: 0;
+}
+
 .bottom-container .carousel-container:last-of-type {
   margin-top: var(--small-space);
 }

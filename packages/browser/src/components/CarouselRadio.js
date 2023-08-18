@@ -33,7 +33,6 @@ export class CarouselRadio extends itownsWidgets.Widget {
    * @param {object} options - Options
    * @param {Array.<string>} options.choices - Array of all values displayed (index is used for identifier and value for label text)
    * @param {boolean} options.timelapseState - Timelapse functionnalities state, disable by default.
-   * @param {string} options.title - Title carousel at the top of carousel.
    * @param {HTMLElement} options.parentElement - parent element of the widget
    */
   constructor(itownsView, options) {
@@ -75,13 +74,6 @@ export class CarouselRadio extends itownsWidgets.Widget {
     });
     previousButton.classList.add('carousel-navigation-button');
     this.domElement.appendChild(previousButton);
-
-    // Radio title
-    if (options.title) {
-      const title = document.createElement('h2');
-      title.innerText = options.title;
-      this.domElement.appendChild(title);
-    }
 
     // Radio container
     this.radioContainer = document.createElement('div');

@@ -179,6 +179,10 @@ export class MyApplication {
     selectionContainer.classList.add('date-selection-container');
     bottomContainer.appendChild(selectionContainer);
 
+    const filterTitle = document.createElement('h2');
+    filterTitle.innerText = 'Filters';
+    selectionContainer.appendChild(filterTitle);
+
     // Group by buttons
     this.filterCarousel = new CarouselRadio(
       this.frame3DPlanar.getItownsView(),
