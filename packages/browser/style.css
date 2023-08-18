@@ -108,21 +108,26 @@ h1 {
 }
 
 .carousel-container {
-  text-align: center;
-  padding: 15px 0;
+  width: 100%;
   display: flex;
+  text-align: center;
+  overflow: hidden;
   align-items: center;
+  margin: 10px;
 }
 
 .carousel-radios-container {
-  overflow: clip;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 50%;
+  overflow: clip;
+  max-width:60%;
   background: var(--primary-color-transparent);
-  padding: 10px;
+  padding: 10px 10px 14px 10px;
   border-radius: var(--border-radius);
+}
+
+/* Carousels radios */
+.radio-group{
+  margin: 0 10px;
 }
 
 .radio-group:hover,
@@ -140,4 +145,20 @@ h1 {
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
+}
+
+/* Navigation and play back buttons */
+.carousel-container .carousel-navigation-button, .carousel-container .auto-play-button
+{
+  border:none;
+  padding:2px 0 0 0;
+
+  /* Create perfect Circle */
+  width:50px;
+  height: 50px;
+  border-radius: 25px;
+}
+
+.carousel-container .auto-play-button{
+  padding-left:4px
 }

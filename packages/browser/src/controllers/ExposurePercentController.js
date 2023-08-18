@@ -48,6 +48,10 @@ export class ExposurePercentController extends AggregateController {
     return new itowns.Style({
       fill: {
         color: function (feature) {
+          // Selection style
+          if (feature.userData.isSelected) return 'green';
+          if (feature.userData.isOcculting) return 'pink';
+
           const alpha = feature.getInfo().batchTable.dailyExposurePercent / 100;
 
           const yellow = new THREE.Color('rgb(255, 222, 0)');

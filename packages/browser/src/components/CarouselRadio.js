@@ -1,4 +1,5 @@
 import {
+  itowns,
   itownsWidgets,
   createLabelInput,
   THREE,
@@ -66,11 +67,13 @@ export class CarouselRadio extends itownsWidgets.Widget {
 
     // Create previous button
     const previousButton = document.createElement('button');
-    previousButton.innerText = 'Previous';
-    previousButton.addEventListener('click', (event) => {
+    previousButton.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/></svg>';
+    previousButton.addEventListener('click', () => {
       this.stopAutoPlay();
       this.previous();
     });
+    previousButton.classList.add('carousel-navigation-button');
     this.domElement.appendChild(previousButton);
 
     // Radio title
@@ -87,18 +90,19 @@ export class CarouselRadio extends itownsWidgets.Widget {
 
     // Create next button
     const nextButton = document.createElement('button');
-    nextButton.innerText = 'Next';
-    nextButton.addEventListener('click', (event) => {
+    nextButton.innerHTML =
+      '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/></svg>';
+    nextButton.addEventListener('click', () => {
       this.stopAutoPlay();
       this.next();
     });
+    nextButton.classList.add('carousel-navigation-button');
     this.domElement.appendChild(nextButton);
 
     // Create play button
     const autoPlayButton = document.createElement('button');
-    autoPlayButton.innerText = 'Play';
     autoPlayButton.classList.add('auto-play-button');
-    autoPlayButton.addEventListener('click', (event) => {
+    autoPlayButton.addEventListener('click', () => {
       // Toggle autoPlay state
       if (this.autoPlayInterval) {
         // Cleanup - stop interval already running
@@ -117,6 +121,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
     });
 
     this.domElement.appendChild(autoPlayButton);
+    this.setPlayButtonState(false);
   }
 
   /**
@@ -206,7 +211,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
   setTimelapseState(enabled) {
     // Show / Hide timelaspe autoplay button
     const autoPlayButton = this.domElement.querySelector('.auto-play-button');
-    autoPlayButton.display = enabled ? 'initial' : 'none';
+    autoPlayButton.style.display = enabled ? 'initial' : 'none';
 
     this.timelapseState = enabled;
   }
@@ -223,8 +228,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
       return;
     }
 
-    const autoPlayButton = this.domElement.querySelector('.auto-play-button');
-    autoPlayButton.innerText = 'Pause';
+    this.setPlayButtonState(true);
     this.next();
   }
 
@@ -236,9 +240,22 @@ export class CarouselRadio extends itownsWidgets.Widget {
       clearInterval(this.autoPlayInterval);
       this.autoPlayInterval = null;
 
-      const autoPlayButton = this.domElement.querySelector('.auto-play-button');
-      autoPlayButton.innerText = 'Play';
+      this.setPlayButtonState(false);
     }
+  }
+
+  /**
+   * Updates the inner HTML icon of a play button element based on a boolean value
+   *
+   * @param bPlay - The parameter `bPlay` is a boolean value that determines the state of the play
+   * button. If `bPlay` is `true`, the pause icon will be displayed. If not, the play icon will
+   * be displayed.
+   */
+  setPlayButtonState(bPlay) {
+    const autoPlayButton = this.domElement.querySelector('.auto-play-button');
+    autoPlayButton.innerHTML = bPlay
+      ? '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 320 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"/></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>';
   }
 
   /**
