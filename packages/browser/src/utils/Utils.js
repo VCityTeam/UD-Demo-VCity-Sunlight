@@ -1,10 +1,12 @@
+import { itowns } from '@ud-viz/browser';
+
 /**
  * Get feature from the occulting id.
  * An occulting id follow these format : 'Tile-tiles/0.b3dm__Feature-0__Triangle-823'
  *
- * @param {itowns.C3DTilesLayer} layer 3DTiles layer containing all features.
- * @param {string} occultingId Occulting id use to search an element.
- * @returns Feature present in the layer.
+ * @param {itowns.C3DTilesLayer} layer - 3DTiles layer containing all features.
+ * @param {string} occultingId - Occulting id use to search an element.
+ * @returns {itowns.C3DTFeature} - Feature present in the layer.
  */
 export function getFeatureByOccultingId(layer, occultingId) {
   // Check if the input string matches the expected format
@@ -26,4 +28,17 @@ export function getFeatureByOccultingId(layer, occultingId) {
   featureId = parseInt(featureId[1]);
 
   return layer.tilesC3DTileFeatures.get(tileIndex).get(featureId);
+}
+
+/**
+ * The clamp function returns a value that is clamped between a minimum and maximum value.
+ *
+ * @param {number} value - The value parameter represents the value that you want to clamp or restrict within a
+ * certain range.
+ * @param {number} min - The "min" parameter represents the minimum value that the "value" parameter can be.
+ * @param {number} max - The maximum value that the "value" parameter can be.
+ * @returns {number} the value clamped between the minimum and maximum values.
+ */
+export function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }

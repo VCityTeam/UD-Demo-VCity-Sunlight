@@ -6,22 +6,11 @@ import {
   clearChildren,
 } from '@ud-viz/browser';
 
+import { clamp } from '../utils/Utils';
+
 const DEFAULT_OPTIONS = {
   position: 'bottom',
 };
-
-/**
- * Clamp a value between a min and max, because JS doesn't
- * provide one by default : https://webtips.dev/webtips/javascript/how-to-clamp-numbers-in-javascript
- *
- * @param value
- * @param min
- * @param max
- * @returns clamped value
- */
-function clamp(value, min, max) {
-  return Math.min(Math.max(value, min), max);
-}
 
 /**
  * Carousel radios that allows navigation on a long list of radios.
@@ -58,10 +47,8 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    * The function creates the HTML structure for a carousel component with previous and next buttons,
    * radio inputs, and a play button.
-   *
-   * @param {object} options - Options
    */
-  createHTMLStructure(options) {
+  createHTMLStructure() {
     this.domElement.classList.add('carousel-container');
 
     // Create previous button
@@ -161,7 +148,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    * Get the current value checked or if undefined, a default value.
    *
-   * @returns selection index
+   * @returns {number} selection index
    */
   getCurrentSelectionIndex() {
     const currentSelection = this.radioContainer.querySelector('input:checked');
@@ -239,7 +226,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    * Updates the inner HTML icon of a play button element based on a boolean value
    *
-   * @param bPlay - The parameter `bPlay` is a boolean value that determines the state of the play
+   * @param {boolean} bPlay - The parameter `bPlay` is a boolean value that determines the state of the play
    * button. If `bPlay` is `true`, the pause icon will be displayed. If not, the play icon will
    * be displayed.
    */
@@ -253,7 +240,7 @@ export class CarouselRadio extends itownsWidgets.Widget {
   /**
    * Click event called for each onclick radio.
    *
-   * @param {Event} event
+   * @param {Event} event HTML event
    */
   onRadioClick(event) {
     if (event.isTrusted && this.autoPlayInterval) {
