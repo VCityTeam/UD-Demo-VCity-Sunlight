@@ -129,24 +129,13 @@ export class SunlightController {
    * @returns {string} - a string that represents the HTML markup for a legend view.
    */
   getLegendView() {
-    return `
-              <h2>Legend</h2>
-              <div class="legend-item">
-                <span class='box' style='background-color:yellow'></span>
-                <div class="legend-label">Sunny</div>
-              </div>
-              <div class="legend-item">
-              <span class='box' style='background-color:black'></span>
-                <div class="legend-label">Shadow</div>
-              </div>
-              
-              <div class="legend-item">
-                <span class='box' style='background-color:green'></span>
-                <div class="legend-label">Select Feature</div>
-              </div>
-              <div class="legend-item">
-                <span class='box' style='background-color:pink'></span>
-                <div class="legend-label">Occluder Feature</div>
-              </div>`;
+    return `<div class="legend-item">
+              <span class='box' style='background-color:yellow'></span>
+              <p class="legend-label">Sunny</p>
+            </div>
+            <div class="legend-item">
+            <span class='box' style='background-color:black'></span>
+              <p class="legend-label">Shadow</p>
+            </div>`;
   }
 }

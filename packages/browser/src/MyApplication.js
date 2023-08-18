@@ -226,7 +226,19 @@ export class MyApplication {
 
     // Update legend
     const legendContainer = document.querySelector('.legend-container');
-    legendContainer.innerHTML = this.controller.getLegendView();
+
+    // Common legend between each view
+    legendContainer.innerHTML = `<h2>Legend</h2>
+                            
+                                <div class="legend-item">
+                                  <span class='box' style='background-color:green'></span>
+                                  <p class="legend-label">Select Feature</p>
+                                </div>
+                                <div class="legend-item">
+                                  <span class='box' style='background-color:pink'></span>
+                                  <p class="legend-label">Occluder Feature</p>
+                                </div>`;
+    legendContainer.innerHTML += this.controller.getLegendView();
   }
 
   /**

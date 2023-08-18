@@ -203,7 +203,7 @@ h2 {
 .legend-label {
   font-size: 80%;
   color: var((--primary-color));
-  margin-left: 3%;
+  margin: 0 0 0 3%;
 }
 
 .legend-container .box,
