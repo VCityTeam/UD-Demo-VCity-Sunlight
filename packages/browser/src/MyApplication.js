@@ -7,6 +7,7 @@ import {
 
 import { RaySelection } from './components/RaySelection';
 import { CarouselRadio } from './components/CarouselRadio';
+import { OccludePercentController } from './controllers/OccludePercentController';
 import { ExposurePercentController } from './controllers/ExposurePercentController';
 import { SunlightController } from './controllers/SunlightController';
 import { Time } from './utils/Time';
@@ -20,8 +21,17 @@ export class MyApplication {
 
     this.timeline = null;
     this.filterCarousel = null;
-    this.controller = new SunlightController(this.config3DTiles);
+
     this.raySelection = null;
+
+    // Define all controllers / view available in the demos
+    this.controllers = [
+      new SunlightController(this.config3DTiles),
+      new ExposurePercentController(this.config3DTiles),
+      new OccludePercentController(this.config3DTiles),
+    ];
+    this.controllerIndex = 0;
+    this.currentController = this.controllers[this.controllerIndex];
   }
 
   start() {
@@ -208,10 +218,18 @@ export class MyApplication {
    * The switchView function switches between two different controllers and updates the view.
    */
   switchView() {
-    this.controller =
-      this.controller instanceof ExposurePercentController
-        ? new SunlightController(this.config3DTiles)
-        : new ExposurePercentController(this.config3DTiles);
+    if (this.controllers.length <= 0) {
+      console.error('Controllers are undefined.');
+      return;
+    }
+
+    // Loop controller as an infinite list
+    this.controllerIndex++;
+    if (this.controllers.length <= this.controllerIndex) {
+      this.controllerIndex = 0;
+    }
+
+    this.currentController = this.controllers[this.controllerIndex];
 
     this.updateView();
   }
@@ -223,7 +241,7 @@ export class MyApplication {
     this.applyStyle();
 
     // Update filters
-    const filters = this.controller.getFiltersName();
+    const filters = this.currentController.getFiltersName();
     this.filterCarousel.setChoices(filters);
     this.filterCarousel.triggerChoice(0);
 
@@ -245,7 +263,7 @@ export class MyApplication {
                                   <span class='box' style='background-color:pink'></span>
                                   <p class="legend-label">Occluder Feature</p>
                                 </div>`;
-    legendContainer.innerHTML += this.controller.getLegendView();
+    legendContainer.innerHTML += this.currentController.getLegendView();
   }
 
   /**
@@ -258,7 +276,7 @@ export class MyApplication {
       .getLayers()
       .filter((el) => el.isC3DTilesLayer)
       .forEach((layer) => {
-        layer.style = this.controller.getStyle();
+        layer.style = this.currentController.getStyle();
       });
 
     this.frame3DPlanar.getItownsView().notifyChange();
@@ -268,7 +286,7 @@ export class MyApplication {
    * Update the timeline with the displayed dates obtained from the controller.
    */
   updateTimeline() {
-    const dates = this.controller.getDisplayedDates();
+    const dates = this.currentController.getDisplayedDates();
     this.timeline.setChoices(dates);
     this.timeline.triggerChoice(0);
   }
@@ -277,7 +295,7 @@ export class MyApplication {
    * Update title page based on controller title.
    */
   updateTitle() {
-    document.querySelector('h1').innerText = this.controller.getTitle();
+    document.querySelector('h1').innerText = this.currentController.getTitle();
   }
 
   /**
@@ -286,14 +304,14 @@ export class MyApplication {
   registersToEvents() {
     // Apply filters on controller
     this.filterCarousel.radioContainer.addEventListener('onselect', (event) => {
-      this.controller.applyFilter(event.detail);
+      this.currentController.applyFilter(event.detail);
       this.updateTimeline();
       this.updateTitle();
     });
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
-      const newConfig = this.controller.getConfigAt(event.detail);
+      const newConfig = this.currentController.getConfigAt(event.detail);
       this.replace3DTiles([newConfig]);
     });
 

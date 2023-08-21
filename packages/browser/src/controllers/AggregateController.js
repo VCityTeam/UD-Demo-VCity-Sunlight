@@ -10,16 +10,6 @@ export class AggregateController extends SunlightController {
   }
 
   /**
-   * Get config3DTiles given an index of filtered config (by day or month).
-   *
-   * @param {number} configIndex - Config index wanted by MyApplication.
-   * @returns {object} Config corresponding to the given config index.
-   */
-  getConfigAt(configIndex) {
-    return this.filteredConfig[configIndex];
-  }
-
-  /**
    * The function `switchScale` takes a `timeScale` parameter and based on its value, filters the
    * configuration either by days or by months.
    *
