@@ -85,20 +85,14 @@ export class Time {
   }
 
   /**
-   * The function `getDateString` returns a formatted date string in the format "MM/DD/YY".
+   * The function `getDateString` returns a formatted date string in the format "YY-MM-DD".
    *
    * @param {Date} date - The `date` parameter is the date object that you want to convert to a formatted
    * string.
-   * @returns {string} a formatted date string in the format "MM/DD/YY".
+   * @returns {string} a formatted date string in the format "YY-MM-DD".
    */
   static getDateString(date) {
-    return date
-      .toLocaleString('en-EN', {
-        day: '2-digit',
-        year: '2-digit',
-        month: '2-digit',
-      })
-      .replace(',', '');
+    return date.toISOString().slice(0, 10);
   }
 
   /**
