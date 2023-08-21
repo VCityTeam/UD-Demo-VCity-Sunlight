@@ -44,13 +44,13 @@ export class SunlightController {
   }
 
   /**
-   * The getConfigs function return a config3DTiles given an index.
+   * Get config3DTiles given an index of filtered config (by hour, day or month).
    *
-   * @param {number} index - Config index.
-   * @returns {object} - Config3DTiles at a given idnex.
+   * @param {number} configIndex - Config index wanted by MyApplication.
+   * @returns {object} Config corresponding to the given config index.
    */
-  getConfigAt(index) {
-    return this.config3DTiles[index];
+  getConfigAt(configIndex) {
+    return this.getCurrentConfig()[configIndex];
   }
 
   /**
