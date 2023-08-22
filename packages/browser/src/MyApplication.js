@@ -28,7 +28,7 @@ export class MyApplication {
     this.controllers = [
       new SunlightController(this.config3DTiles),
       new ExposurePercentController(this.config3DTiles),
-      new OccludePercentController(this.config3DTiles),
+      // new OccludePercentController(this.config3DTiles),
     ];
     this.controllerIndex = 0;
     this.currentController = this.controllers[this.controllerIndex];
@@ -196,7 +196,7 @@ export class MyApplication {
     // Group by buttons
     this.filterCarousel = new CarouselRadio(
       this.frame3DPlanar.getItownsView(),
-      { parentElement: selectionContainer /* title: 'Filters'*/ }
+      { parentElement: selectionContainer }
     );
 
     // Add timelapse radios
