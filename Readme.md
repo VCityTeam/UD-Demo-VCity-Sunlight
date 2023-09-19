@@ -10,7 +10,7 @@
   - [Usage](#usage)
   - [Contributing](#contributing)
   - [License](#license)
-  - [Contact](#contact)
+  - [Main Contributors](#main-contributors)
   - [Acknowledgments](#acknowledgments)
 
 <!-- /TOC -->
@@ -19,12 +19,19 @@
 
 Vizualisation of 3DTiles produces by [pySunlight containing](https://github.com/VCityTeam/pySunlight) light pre-calculation results.
 
-In this demo show three vizualisation of Sunlight :
+In this demo, we show two vizualisation of Sunlight :
 
 - Sunlight and Shadow vizualisation
 - Impact
 
 It's based on [UD-Viz-Template](https://github.com/VCityTeam/UD-Viz-Template).
+
+UD-Demo-VCity-Sunlight is one repository of the Sunlight project, including :
+
+- [Sunlight](https://github.com/VCityTeam/Sunlight)
+- [pySunlight](https://github.com/VCityTeam/pySunlight)
+- [pySunlight-docker](https://github.com/VCityTeam/pySunlight-docker)
+- [UD-Demo-VCity-Sunlight](https://github.com/VCityTeam/UD-Demo-VCity-Sunlight)
 
 ## Getting Started
 
