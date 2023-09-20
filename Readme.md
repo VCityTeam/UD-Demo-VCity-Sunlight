@@ -67,7 +67,7 @@ When changes are made the app is rebuild.
 
 Use [UD-Viz developers documention](https://github.com/VCityTeam/UD-Viz/blob/master/docs/static/Developers.md#npm-scripts) to see the full list of npm supported commands.
 
-Refer to [this](docs/data-processing/REAME.md#data-processing) documentation to create and display 3D Tiles Sunlight.
+Refer to [this](docs/data-processing/README.md#data-processing) documentation to create and display 3D Tiles Sunlight.
 
 ## Contributing
 
