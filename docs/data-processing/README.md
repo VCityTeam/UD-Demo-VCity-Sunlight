@@ -50,26 +50,28 @@ This documentation explains how to create Sunlight 3D Tiles for Demo-Sunlight an
 7. At the end of the computation, you will find the 3D Tiles Sunlight in the outputs volume defined in the previous command.
 
 ## How to display 3D Tiles Sunlight in Demo-Sunlight - :warning: WIP
+1. Go to the assets directory :
+   ```bash
+   cd packages/browser/assets
+   ```
 
-1. Get 3D Tiles Sunlight from the liris server.
+2. Get 3D Tiles Sunlight from the liris server.
 
     ```bash
-    wget -r -np -nH --cut-dirs=3 -R "index.html*" https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2018/Lyon-1_2018/
+    wget -r -np -nH --cut-dirs=2 -R "index.html*" https://dataset-dl.liris.cnrs.fr/three-d-tiles-lyon-metropolis/2018/Lyon-1_2018_Sunlight/
     ```
 
-2. Place 3D Tiles Sunlight in the assets directory (`packages/browser/assets/`).
-
-3. :warning: WIP to externalize configuration from source code. Change the config variable in the function `formatConfig3DTiles` in `packages/browser/src/MyApplication.js`. For instance with Lyon-1_2018, we fill in each 3D Tiles per hour that will be seen:
+3. :warning: WIP to externalize configuration from source code. Change the config variable in the function `formatConfig3DTiles` in `packages/browser/src/MyApplication.js`. For instance with Lyon-1_2018_Sunlight, we fill in each 3D Tiles per hour that will be seen:
 
    ```js
     const config = [
        {
-          id: 'Lyon-1_2018',
+          id: 'Lyon-1_2018_Sunlight',
           url: '../assets/Lyon-1_2018/2016-10-01__1000/tileset.json',
           color: '0xFFFFFF',
        },
        {
-          id: 'Lyon-1_2018',
+          id: 'Lyon-1_2018_Sunlight',
           url: '../assets/Lyon-1_2018/2016-10-01__1100/tileset.json',
           color: '0xFFFFFF',
        }
