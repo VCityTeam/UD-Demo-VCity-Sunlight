@@ -7,7 +7,7 @@
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-  - [Usage](#usage)
+    - [Usage](#usage)
   - [Contributing](#contributing)
   - [License](#license)
   - [Main Contributors](#main-contributors)
@@ -63,7 +63,7 @@ Install npm, refer to [here](https://github.com/VCityTeam/UD-SV/blob/master/Tool
 
 When changes are made the app is rebuild.
 
-## Usage
+### Usage
 
 Use [UD-Viz developers documention](https://github.com/VCityTeam/UD-Viz/blob/master/docs/static/Developers.md#npm-scripts) to see the full list of npm supported commands.
 
