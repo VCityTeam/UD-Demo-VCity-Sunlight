@@ -61,7 +61,7 @@ Install npm, refer to [here](https://github.com/VCityTeam/UD-SV/blob/master/Tool
 
 4. Open [http://localhost:8000/](http://localhost:8000/) to view it in your browser.
 
-When changes are made the app is rebuild.
+When changes are made to the files, the app is automatically rebuilt (no need to execute the run debug command again).
 
 ### Usage
 
