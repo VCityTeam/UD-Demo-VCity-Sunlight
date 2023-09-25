@@ -35,10 +35,10 @@ export class OccludePercentController extends AggregateController {
             const alpha =
               feature.getInfo().batchTable.monthlyOccludePercent / 100;
 
-            const yellow = new THREE.Color('rgb(255, 222, 0)');
-            const red = new THREE.Color('rgb(210, 0, 26)');
+            const shadowColor = new THREE.Color('rgb(46, 67, 116)');
+            const lightedColor = new THREE.Color('rgb(255, 222, 0)');
 
-            return yellow.lerp(red, alpha);
+            return shadowColor.lerp(lightedColor, alpha);
           },
         },
       });
@@ -54,10 +54,10 @@ export class OccludePercentController extends AggregateController {
 
           const alpha = feature.getInfo().batchTable.dailyOccludePercent / 100;
 
-          const yellow = new THREE.Color('rgb(255, 222, 0)');
-          const red = new THREE.Color('rgb(210, 0, 26)');
+          const shadowColor = new THREE.Color('rgb(46, 67, 116)');
+          const lightedColor = new THREE.Color('rgb(255, 222, 0)');
 
-          return yellow.lerp(red, alpha);
+          return shadowColor.lerp(lightedColor, alpha);
         },
       },
     });
@@ -78,7 +78,7 @@ export class OccludePercentController extends AggregateController {
 
   getLegendView() {
     return `<div class="legend-item gradient-item">
-              <span class='box' style='background:linear-gradient(0deg, rgba(255,222,0,1) 0%, rgba(210,0,26,1) 100%)'></span>
+              <span class='box' style='background:linear-gradient(0deg, rgba(46, 67, 116, 1) 0%, rgba(255, 222, 0, 1) 100%)'></span>
               <div class="legend-label">
                 <p>High Occlude Amout</p>
                 <p>Low Occlude Amout</p>

@@ -35,10 +35,10 @@ export class ExposurePercentController extends AggregateController {
             const alpha =
               feature.getInfo().batchTable.monthlyExposurePercent / 100;
 
-            const yellow = new THREE.Color('rgb(255, 222, 0)');
-            const red = new THREE.Color('rgb(210, 0, 26)');
+            const shadowColor = new THREE.Color('rgb(46, 67, 116)');
+            const lightedColor = new THREE.Color('rgb(255, 222, 0)');
 
-            return yellow.lerp(red, alpha);
+            return shadowColor.lerp(lightedColor, alpha);
           },
         },
       });
@@ -54,10 +54,10 @@ export class ExposurePercentController extends AggregateController {
 
           const alpha = feature.getInfo().batchTable.dailyExposurePercent / 100;
 
-          const yellow = new THREE.Color('rgb(255, 222, 0)');
-          const red = new THREE.Color('rgb(210, 0, 26)');
+          const shadowColor = new THREE.Color('rgb(46, 67, 116)');
+          const lightedColor = new THREE.Color('rgb(255, 222, 0)');
 
-          return yellow.lerp(red, alpha);
+          return shadowColor.lerp(lightedColor, alpha);
         },
       },
     });
@@ -78,7 +78,7 @@ export class ExposurePercentController extends AggregateController {
 
   getLegendView() {
     return `<div class="legend-item gradient-item">
-              <span class='box' style='background:linear-gradient(0deg, rgba(255,222,0,1) 0%, rgba(210,0,26,1) 100%)'></span>
+              <span class='box' style='background:linear-gradient(0deg, rgba(46, 67, 116, 1) 0%, rgba(255, 222, 0, 1) 100%)'></span>
               <div class="legend-label">
                 <p>Often Illuminated</p>
                 <p>Often Shaded</p>
