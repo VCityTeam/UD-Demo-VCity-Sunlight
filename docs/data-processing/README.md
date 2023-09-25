@@ -2,7 +2,9 @@
 
 This documentation explains how to create Sunlight 3D Tiles for Demo-Sunlight and how to configure Demo-Sunlight to display them.
 
-## How to create 3D Tiles Sunlight
+## How to create 3D Tiles Sunlight from 3D Tiles
+
+All steps are present in a [small bash script](compute-sunlight.sh).
 
 1. Create your working directories.
 
