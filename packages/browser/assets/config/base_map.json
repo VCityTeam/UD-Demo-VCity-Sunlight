@@ -1,0 +1,8 @@
+{
+  "url": "https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows",
+  "name": "ortho_2018",
+  "version": "1.3.0",
+  "format": "image/jpeg",
+  "layer_name": "Base_Map",
+  "transparent": true
+}

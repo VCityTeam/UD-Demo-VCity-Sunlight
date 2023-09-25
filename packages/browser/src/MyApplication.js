@@ -5,6 +5,7 @@ import {
   proj4,
   addBaseMapLayer,
   addElevationLayer,
+  FileUtil,
 } from '@ud-viz/browser';
 
 import { RaySelection } from './components/RaySelection';
@@ -19,7 +20,7 @@ export class MyApplication {
     this.extent = null;
     this.frame3DPlanar = null;
 
-    this.config3DTiles = this.formatConfig3DTiles();
+    this.config3DTiles = [];
 
     this.timeline = null;
     this.filterCarousel = null;
@@ -37,51 +38,45 @@ export class MyApplication {
   }
 
   start() {
-    this.initItownsExtent();
-    this.initFrame3D();
-    this.initUI();
-    this.registersToEvents();
-    this.updateView();
+    // Load configs file
+    FileUtil.loadMultipleJSON([
+      '../assets/config/3DTiles.json',
+      '../assets/config/elevation.json',
+      '../assets/config/base_map.json',
+      '../assets/config/extents.json',
+    ]).then((configs) => {
+      // Check that the date is in the url, because it will be used accross all controllers.
+      configs['3DTiles'].forEach((element) => {
+        const date = Time.extractDateAndHours(element.url);
+        if (date) {
+          element.date = date;
+          this.config3DTiles.push(element);
+        }
+      });
 
-    addBaseMapLayer(
-      {
-        url: 'https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows',
-        name: 'ortho_2018',
-        version: '1.3.0',
-        format: 'image/jpeg',
-        layer_name: 'Base_Map',
-        transparent: true,
-      },
-      this.frame3DPlanar.getItownsView(),
-      this.extent
-    );
+      this.initItownsExtent(configs['extents']);
+      this.initFrame3D();
+      this.initUI();
+      this.registersToEvents();
+      this.updateView();
 
-    addElevationLayer(
-      {
-        url: 'https://download.data.grandlyon.com/wms/grandlyon',
-        name: 'MNT2018_Altitude_2m',
-        format: 'image/jpeg',
-        layer_name: 'wms_elevation_test',
-        colorTextureElevationMinZ: 144,
-        colorTextureElevationMaxZ: 622,
-      },
-      this.frame3DPlanar.getItownsView(),
-      this.extent
-    );
+      addBaseMapLayer(
+        configs['base_map'],
+        this.frame3DPlanar.getItownsView(),
+        this.extent
+      );
 
-    this.frame3DPlanar.getItownsView().notifyChange();
+      addElevationLayer(
+        configs['elevation'],
+        this.frame3DPlanar.getItownsView(),
+        this.extent
+      );
+
+      this.frame3DPlanar.getItownsView().notifyChange();
+    });
   }
 
-  initItownsExtent() {
-    /** Extent Code: https://github.com/search?q=repo%3AiTowns%2Fitowns+path%3A%2FExtent.js&type=code */
-    const configExtent = {
-      crs: 'EPSG:3946',
-      west: 1837860.980127206,
-      east: 1851647,
-      south: 5169347.4265999,
-      north: 5180575,
-    };
-
+  initItownsExtent(configExtent) {
     proj4.default.defs(
       configExtent.crs,
       '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
@@ -107,79 +102,6 @@ export class MyApplication {
     };
 
     this.frame3DPlanar = new Frame3DPlanar(this.extent, configFrame3D);
-  }
-
-  /**
-   * Get all 3dTiles for several timestamp. Each element corresponds to
-   * a sunlight result at a given timestamp.
-   *
-   * @returns {object} Config array of 3DTiles
-   */
-  formatConfig3DTiles() {
-    const config = [
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1000/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1100/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1200/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1300/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1400/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-01__1500/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-02__0700/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-10-02__0800/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-11-01__0800/tileset.json',
-        color: '0xFFFFFF',
-      },
-      {
-        id: 'Lyon-1_2018',
-        url: '../assets/Lyon-1_2018/2016-11-01__0900/tileset.json',
-        color: '0xFFFFFF',
-      },
-    ];
-
-    // Add date from the url in each config3DTiles that will be used accross all application
-    const output = [];
-    config.forEach((element) => {
-      const date = Time.extractDateAndHours(element.url);
-      if (date) {
-        element.date = date;
-        output.push(element);
-      }
-    });
-
-    return output;
   }
 
   /**
