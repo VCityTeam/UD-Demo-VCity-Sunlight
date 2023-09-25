@@ -270,7 +270,7 @@ export class MyApplication {
     }
 
     this.currentController = this.controllers[this.controllerIndex];
-
+    this.raySelection.resetSelection();
     this.updateView();
   }
 
@@ -351,6 +351,7 @@ export class MyApplication {
 
     // Switch 3DTiles with a new timestamp
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
+      this.raySelection.resetSelection();
       const newConfig = this.currentController.getConfigAt(event.detail);
       this.replace3DTiles([newConfig]);
     });

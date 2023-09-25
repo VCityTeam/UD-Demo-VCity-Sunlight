@@ -114,6 +114,9 @@ export class RaySelection {
 
       this.currentSelection.occultingFeature = null;
     }
+
+    // Hide widget
+    this.selectionWidget.displayC3DTFeatureInfo();
   }
 
   /**
