@@ -3,6 +3,8 @@ import {
   add3DTilesLayers,
   itowns,
   proj4,
+  addBaseMapLayer,
+  addElevationLayer,
 } from '@ud-viz/browser';
 
 import { RaySelection } from './components/RaySelection';
@@ -40,6 +42,34 @@ export class MyApplication {
     this.initUI();
     this.registersToEvents();
     this.updateView();
+
+    addBaseMapLayer(
+      {
+        url: 'https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows',
+        name: 'ortho_2018',
+        version: '1.3.0',
+        format: 'image/jpeg',
+        layer_name: 'Base_Map',
+        transparent: true,
+      },
+      this.frame3DPlanar.getItownsView(),
+      this.extent
+    );
+
+    addElevationLayer(
+      {
+        url: 'https://download.data.grandlyon.com/wms/grandlyon',
+        name: 'MNT2018_Altitude_2m',
+        format: 'image/jpeg',
+        layer_name: 'wms_elevation_test',
+        colorTextureElevationMinZ: 144,
+        colorTextureElevationMaxZ: 622,
+      },
+      this.frame3DPlanar.getItownsView(),
+      this.extent
+    );
+
+    this.frame3DPlanar.getItownsView().notifyChange();
   }
 
   initItownsExtent() {
@@ -88,43 +118,53 @@ export class MyApplication {
   formatConfig3DTiles() {
     const config = [
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__0800/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1000/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__0900/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1100/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1300/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1200/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-01__1400/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1300/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-02__0900/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1400/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-01-02__1400/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-01__1500/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-02-01__0900/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-02__0700/tileset.json',
         color: '0xFFFFFF',
       },
       {
-        id: 'Hotel-Police',
-        url: '../assets/Hotel-Police/2016-02-01__1400/tileset.json',
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-10-02__0800/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-11-01__0800/tileset.json',
+        color: '0xFFFFFF',
+      },
+      {
+        id: 'Lyon-1_2018',
+        url: '../assets/Lyon-1_2018/2016-11-01__0900/tileset.json',
         color: '0xFFFFFF',
       },
     ];
