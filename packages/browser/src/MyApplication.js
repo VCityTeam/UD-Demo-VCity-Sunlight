@@ -39,52 +39,46 @@ export class MyApplication {
 
   start() {
     // Load configs file
-    FileUtil.loadMultipleJSON(['../assets/config/3DTiles.json']).then(
-      (configs) => {
-        // Add date from the url in each config3DTiles that will be used accross all application
-        configs['3DTiles'].forEach((element) => {
-          const date = Time.extractDateAndHours(element.url);
-          if (date) {
-            element.date = date;
-            this.config3DTiles.push(element);
-          }
-        });
+    FileUtil.loadMultipleJSON([
+      '../assets/config/3DTiles.json',
+      '../assets/config/elevation.json',
+    ]).then((configs) => {
+      // Check that the date is in the url, because it will be used accross all controllers.
+      configs['3DTiles'].forEach((element) => {
+        const date = Time.extractDateAndHours(element.url);
+        if (date) {
+          element.date = date;
+          this.config3DTiles.push(element);
+        }
+      });
 
-        this.initItownsExtent();
-        this.initFrame3D();
-        this.initUI();
-        this.registersToEvents();
-        this.updateView();
+      this.initItownsExtent();
+      this.initFrame3D();
+      this.initUI();
+      this.registersToEvents();
+      this.updateView();
 
-        addBaseMapLayer(
-          {
-            url: 'https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows',
-            name: 'ortho_2018',
-            version: '1.3.0',
-            format: 'image/jpeg',
-            layer_name: 'Base_Map',
-            transparent: true,
-          },
-          this.frame3DPlanar.getItownsView(),
-          this.extent
-        );
+      addBaseMapLayer(
+        {
+          url: 'https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows',
+          name: 'ortho_2018',
+          version: '1.3.0',
+          format: 'image/jpeg',
+          layer_name: 'Base_Map',
+          transparent: true,
+        },
+        this.frame3DPlanar.getItownsView(),
+        this.extent
+      );
 
-        addElevationLayer(
-          {
-            url: 'https://download.data.grandlyon.com/wms/grandlyon',
-            name: 'MNT2018_Altitude_2m',
-            format: 'image/jpeg',
-            layer_name: 'wms_elevation_test',
-            colorTextureElevationMinZ: 144,
-            colorTextureElevationMaxZ: 622,
-          },
-          this.frame3DPlanar.getItownsView(),
-          this.extent
-        );
+      addElevationLayer(
+        configs['elevation'],
+        this.frame3DPlanar.getItownsView(),
+        this.extent
+      );
 
-        this.frame3DPlanar.getItownsView().notifyChange();
-      }
-    );
+      this.frame3DPlanar.getItownsView().notifyChange();
+    });
   }
 
   initItownsExtent() {
