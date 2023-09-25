@@ -7,7 +7,7 @@
   - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-  - [Usage](#usage)
+    - [Usage](#usage)
   - [Contributing](#contributing)
   - [License](#license)
   - [Main Contributors](#main-contributors)
@@ -61,11 +61,13 @@ Install npm, refer to [here](https://github.com/VCityTeam/UD-SV/blob/master/Tool
 
 4. Open [http://localhost:8000/](http://localhost:8000/) to view it in your browser.
 
-When changes are made the app is rebuild.
+When changes are made to the files, the app is automatically rebuilt (no need to execute the run debug command again).
 
-## Usage
+### Usage
 
 Use [UD-Viz developers documention](https://github.com/VCityTeam/UD-Viz/blob/master/docs/static/Developers.md#npm-scripts) to see the full list of npm supported commands.
+
+Refer to [this](docs/data-processing/README.md#data-processing) documentation to create and display 3D Tiles Sunlight.
 
 ## Contributing
 
