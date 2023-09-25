@@ -270,7 +270,7 @@ export class MyApplication {
     }
 
     this.currentController = this.controllers[this.controllerIndex];
-
+    this.raySelection.resetSelection();
     this.updateView();
   }
 
