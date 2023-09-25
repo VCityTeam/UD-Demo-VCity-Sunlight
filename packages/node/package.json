@@ -1,17 +1,17 @@
 {
-  "name": "@my_app_name/node",
-  "version": "1.0.0",
-  "description": "This is your my_app_name node package description",
+  "name": "@ud_demo_vcity_sunlight/node",
+  "version": "0.1.0",
+  "description": "Demo-Sunlight node package",
   "main": "src/index.js",
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "build-debug": "cross-env  NODE_ENV=development webpack"
+    "build-debug": "cross-env NODE_ENV=development webpack"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "University of Lyon",
+  "license": "LGPL-2.1-only",
   "dependencies": {
     "@ud-viz/node": "3.1.0",
-    "@my_app_name/shared": "^1.0.0"
+    "@ud_demo_vcity_sunlight/shared": "^0.1.0"
   },
   "devDependencies": {
     "webpack-node-externals": "^2.5.2"

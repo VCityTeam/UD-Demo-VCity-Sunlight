@@ -50,7 +50,7 @@ Install npm, refer to [here](https://github.com/VCityTeam/UD-SV/blob/master/Tool
 2. Install npm dependencies :
 
    ```bash
-   npm i
+   npm i --legacy-peer-deps && npm i
    ```
 
 3. Builds and runs the app in the development mode.

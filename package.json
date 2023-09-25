@@ -1,8 +1,8 @@
 {
   "name": "ud_demo_vcity_sunlight",
   "private": true,
-  "version": "0.1",
-  "description": "This is a demo of Sunlight based on @ud-viz.",
+  "version": "0.1.0",
+  "description": "This is a demo of Sunlight using @ud-viz",
   "workspaces": [
     "packages/*"
   ],
@@ -28,11 +28,13 @@
   },
   "keywords": [
     "vcity",
+    "urban-data",
     "sunlight",
     "3dtiles",
+    "3d-tiles",
     "ud-viz"
   ],
-  "author": "VCity",
+  "author": "University of Lyon",
   "license": "LGPL-2.1-only",
   "bugs": {
     "url": "https://github.com/VCityTeam/UD-Demo-VCity-Sunlight/issues"

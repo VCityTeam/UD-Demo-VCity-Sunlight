@@ -6,28 +6,28 @@ const printExec = function (result) {
   console.error('stderr: \n', result.stderr);
 };
 
-console.log('Build @my_app_name/shared');
+console.log('Build @ud_demo_vcity_sunlight/shared');
 exec('npm run build-shared')
   .catch((error) => {
-    console.log('@my_app_name/shared build failed');
+    console.log('@ud_demo_vcity_sunlight/shared build failed');
     console.error(error);
     process.exit(1); //
   })
   .then(printExec)
   .then(() => {
-    console.log('Build @my_app_name/browser');
+    console.log('Build @ud_demo_vcity_sunlight/browser');
     exec('npm run build-browser')
       .catch((error) => {
-        console.log('@my_app_name/browser build failed');
+        console.log('@ud_demo_vcity_sunlight/browser build failed');
         console.error(error);
         process.exit(1);
       })
       .then(printExec)
       .then(() => {
-        console.log('Build @my_app_name/node');
+        console.log('Build @ud_demo_vcity_sunlight/node');
         exec('npm run build-node')
           .catch((error) => {
-            console.log('@my_app_name/node build failed');
+            console.log('@ud_demo_vcity_sunlight/node build failed');
             console.error(error);
             process.exit(1);
           })

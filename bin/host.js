@@ -31,7 +31,7 @@ reload(app).then(() => {
 
 try {
   // start applicaction server
-  const { MyAppNameServer } = require('@my_app_name/node');
+  const { MyAppNameServer } = require('@ud_demo_vcity_sunlight/node');
 
   const myAppNameServer = new MyAppNameServer();
   myAppNameServer.start();
