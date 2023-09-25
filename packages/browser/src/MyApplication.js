@@ -42,6 +42,7 @@ export class MyApplication {
     FileUtil.loadMultipleJSON([
       '../assets/config/3DTiles.json',
       '../assets/config/elevation.json',
+      '../assets/config/base_map.json',
     ]).then((configs) => {
       // Check that the date is in the url, because it will be used accross all controllers.
       configs['3DTiles'].forEach((element) => {
@@ -59,14 +60,7 @@ export class MyApplication {
       this.updateView();
 
       addBaseMapLayer(
-        {
-          url: 'https://imagerie.data.grandlyon.com/geoserver/grandlyon/ows',
-          name: 'ortho_2018',
-          version: '1.3.0',
-          format: 'image/jpeg',
-          layer_name: 'Base_Map',
-          transparent: true,
-        },
+        configs['base_map'],
         this.frame3DPlanar.getItownsView(),
         this.extent
       );
