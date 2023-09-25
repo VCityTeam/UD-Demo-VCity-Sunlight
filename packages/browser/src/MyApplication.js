@@ -43,6 +43,7 @@ export class MyApplication {
       '../assets/config/3DTiles.json',
       '../assets/config/elevation.json',
       '../assets/config/base_map.json',
+      '../assets/config/extents.json',
     ]).then((configs) => {
       // Check that the date is in the url, because it will be used accross all controllers.
       configs['3DTiles'].forEach((element) => {
@@ -53,7 +54,7 @@ export class MyApplication {
         }
       });
 
-      this.initItownsExtent();
+      this.initItownsExtent(configs['extents']);
       this.initFrame3D();
       this.initUI();
       this.registersToEvents();
@@ -75,16 +76,7 @@ export class MyApplication {
     });
   }
 
-  initItownsExtent() {
-    /** Extent Code: https://github.com/search?q=repo%3AiTowns%2Fitowns+path%3A%2FExtent.js&type=code */
-    const configExtent = {
-      crs: 'EPSG:3946',
-      west: 1837860.980127206,
-      east: 1851647,
-      south: 5169347.4265999,
-      north: 5180575,
-    };
-
+  initItownsExtent(configExtent) {
     proj4.default.defs(
       configExtent.crs,
       '+proj=lcc +lat_1=45.25 +lat_2=46.75' +
