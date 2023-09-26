@@ -17,8 +17,9 @@ RUN apt-get install -y nodejs
 RUN node --version
 RUN npm --version
 
-RUN git clone https://github.com/VCityTeam/UD-Demo-VCity-Sunlight.git
+RUN mkdir UD-Demo-VCity-Sunlight
 WORKDIR /UD-Demo-VCity-Sunlight
+COPY . .
 
 RUN npm i --legacy-peer-deps
 RUN npm i
