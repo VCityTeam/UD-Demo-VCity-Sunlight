@@ -8,6 +8,7 @@
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
     - [Usage](#usage)
+    - [Deployment](#deployment)
   - [Contributing](#contributing)
   - [License](#license)
   - [Main Contributors](#main-contributors)
@@ -68,6 +69,22 @@ When changes are made to the files, the app is automatically rebuilt (no need to
 Use [UD-Viz developers documention](https://github.com/VCityTeam/UD-Viz/blob/master/docs/static/Developers.md#npm-scripts) to see the full list of npm supported commands.
 
 Refer to [this](docs/data-processing/README.md#data-processing) documentation to create and display 3D Tiles Sunlight.
+
+### Deployment
+
+1. Build docker image :
+
+   ```bash
+   docker build -t demo-sunlight . --no-cache
+   ```
+
+2. Run the container :
+
+   ```bash
+   docker run -p 0.0.0.0:8080:8000/tcp --rm -t demo-sunlight
+   ```
+
+3. Go to [http://localhost:8080/](http://localhost:8080/) to see Demo-Sunlight.
 
 ## Contributing
 
