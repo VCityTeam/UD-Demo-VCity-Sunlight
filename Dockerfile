@@ -25,4 +25,4 @@ RUN npm i --legacy-peer-deps
 RUN npm i
 EXPOSE 80
 
-CMD ["npm", "run", "debug"]
+CMD ["npm", "run", "start"]
