@@ -131,7 +131,7 @@ export class MyApplication {
    * Replace 3D Tiles batch table after the date changed.
    *
    * @param {object} sunlightConfig - An object containing configs
-   * @param tileIndex
+   * @param {int} tileIndex - Tile index thaht will be updated
    */
   replaceBatchTable(sunlightConfig, tileIndex = 0) {
     // Construct path containing sunlight result for a given timestamps and tileIndex
@@ -158,9 +158,14 @@ export class MyApplication {
         }
       }
 
-      // Redraw the current view
-      layer.updateStyle();
-      this.frame3DPlanar.getItownsView().notifyChange();
+      // Recursive call to replace tile on the fly
+      if (tileIndex < layer.tilesC3DTileFeatures.size - 1) {
+        this.replaceBatchTable(sunlightConfig, tileIndex + 1);
+      } else {
+        // Redraw the current view when the last tile is updated
+        layer.updateStyle();
+        this.frame3DPlanar.getItownsView().notifyChange();
+      }
     });
   }
 
