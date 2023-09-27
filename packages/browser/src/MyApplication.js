@@ -147,6 +147,9 @@ export class MyApplication {
       // Get geometry layer currently displayed
       const layer = this.getGeometryLayer();
 
+      // TODO search to replace with itowns function to write batch table
+      // which avoid to manually set the batch table :
+      // https://github.com/VCityTeam/pySunlight/issues/20
       for (const featureId in batchTable) {
         // Get current feature associated to the batch table
         const result = batchTable[featureId];
