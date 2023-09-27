@@ -10,10 +10,9 @@ import {
 
 import { RaySelection } from './components/RaySelection';
 import { CarouselRadio } from './components/CarouselRadio';
-import { OccludePercentController } from './controllers/OccludePercentController';
 import { ExposurePercentController } from './controllers/ExposurePercentController';
 import { SunlightController } from './controllers/SunlightController';
-import { Time } from './utils/Time';
+import { getFeatureBySunlightId } from './utils/Utils';
 
 export class MyApplication {
   constructor() {
@@ -21,20 +20,16 @@ export class MyApplication {
     this.frame3DPlanar = null;
 
     this.config3DTiles = [];
+    this.sunlightConfig = null;
 
     this.timeline = null;
     this.filterCarousel = null;
 
     this.raySelection = null;
 
-    // Define all controllers / view available in the demos
-    this.controllers = [
-      new SunlightController(this.config3DTiles),
-      new ExposurePercentController(this.config3DTiles),
-      // new OccludePercentController(this.config3DTiles),
-    ];
+    this.controllers = [];
     this.controllerIndex = 0;
-    this.currentController = this.controllers[this.controllerIndex];
+    this.currentController = null;
   }
 
   start() {
@@ -44,21 +39,32 @@ export class MyApplication {
       '../assets/config/elevation.json',
       '../assets/config/base_map.json',
       '../assets/config/extents.json',
+      '../assets/config/sunlight_results.json',
     ]).then((configs) => {
-      // Check that the date is in the url, because it will be used accross all controllers.
-      configs['3DTiles'].forEach((element) => {
-        const date = Time.extractDateAndHours(element.url);
-        if (date) {
-          element.date = date;
-          this.config3DTiles.push(element);
-        }
-      });
+      this.config3DTiles = configs['3DTiles'];
+      this.sunlightConfig = configs['sunlight_results'];
 
       this.initItownsExtent(configs['extents']);
       this.initFrame3D();
       this.initUI();
       this.registersToEvents();
-      this.updateView();
+
+      // Add default 3D Tiles
+      add3DTilesLayers(this.config3DTiles, this.frame3DPlanar.getItownsView());
+      this.frame3DPlanar.getItownsView().notifyChange();
+
+      // Update view only after loading all features
+      this.getGeometryLayer().addEventListener(
+        itowns.C3DTILES_LAYER_EVENTS.ON_TILE_CONTENT_LOADED,
+        ({ tileContent }) => {
+          tileContent.traverse((el) => {
+            // Update view only when a tile with geomtry is loaded
+            if (el.geometry && el.geometry.attributes._BATCHID) {
+              this.updateView();
+            }
+          });
+        }
+      );
 
       addBaseMapLayer(
         configs['base_map'],
@@ -72,7 +78,13 @@ export class MyApplication {
         this.extent
       );
 
-      this.frame3DPlanar.getItownsView().notifyChange();
+      // Define all controllers / view available in the demos
+      this.controllers = [
+        new SunlightController(this.sunlightConfig),
+        // new ExposurePercentController(this.sunlightConfig),
+      ];
+      this.controllerIndex = 0;
+      this.currentController = this.controllers[this.controllerIndex];
     });
   }
 
@@ -105,25 +117,47 @@ export class MyApplication {
   }
 
   /**
-   * Replace old 3d tiles by new 3DTiles after the date changed.
+   * The function `getGeometryLayer()` returns the geometry layer with the specified ID from the 3D
+   * planar frame.
    *
-   * @param {object} config3DTiles - An object containing 3DTiles layers configs
+   * @returns the geometry layer with the specified layerId.
    */
-  replace3DTiles(config3DTiles) {
-    // Remove previous 3DTiles because we change the timestamp
-    this.frame3DPlanar
-      .getItownsView()
-      .getLayers()
-      .filter((el) => el.isC3DTilesLayer)
-      .forEach((layer) => {
-        this.frame3DPlanar.getItownsView().removeLayer(layer.id);
-      });
+  getGeometryLayer() {
+    const layerId = this.config3DTiles[0].id;
+    return this.frame3DPlanar.getItownsView().getLayerById(layerId);
+  }
 
-    add3DTilesLayers(config3DTiles, this.frame3DPlanar.getItownsView());
+  /**
+   * Replace 3D Tiles batch table after the date changed.
+   *
+   * @param {object} sunlightConfig - An object containing configs
+   */
+  replaceBatchTable(sunlightConfig) {
+    FileUtil.loadMultipleJSON([
+      '../assets/Hotel-Police/2016-01-01__0800/0.json',
+    ]).then((tiles) => {
+      // Get geometry layer currently displayed
+      const layer = this.getGeometryLayer();
 
-    // Apply light style on new 3DTiles
-    this.applyStyle();
-    this.frame3DPlanar.getItownsView().notifyChange();
+      for (const tileIndex in tiles) {
+        const batchTable = tiles[tileIndex];
+
+        for (const featureId in batchTable) {
+          // Get current feature associated to the batch table
+          const result = batchTable[featureId];
+          const feature = getFeatureBySunlightId(layer, featureId);
+
+          // Replace batch table with new content
+          for (const key in result) {
+            feature.getInfo().batchTable[key] = result[key];
+          }
+        }
+      }
+
+      // Redraw the current view
+      layer.updateStyle();
+      this.frame3DPlanar.getItownsView().notifyChange();
+    });
   }
 
   initUI() {
@@ -275,7 +309,7 @@ export class MyApplication {
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
       this.raySelection.resetSelection();
       const newConfig = this.currentController.getConfigAt(event.detail);
-      this.replace3DTiles([newConfig]);
+      this.replaceBatchTable([newConfig]);
     });
 
     // Switch view

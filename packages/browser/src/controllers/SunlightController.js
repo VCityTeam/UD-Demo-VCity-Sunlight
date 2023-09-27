@@ -3,9 +3,9 @@ import { Time, TimeScales } from '../utils/Time';
 
 /* Controller to display light and shadow by hour */
 export class SunlightController {
-  constructor(config3DTiles) {
-    this.config3DTiles = config3DTiles;
-    this.filteredConfig = config3DTiles;
+  constructor(sunlightConfig) {
+    this.sunlightConfig = sunlightConfig;
+    this.filteredConfig = sunlightConfig;
     this.timeScale = TimeScales.Hour;
   }
 
@@ -40,14 +40,14 @@ export class SunlightController {
   }
 
   getCurrentConfig() {
-    return this.filteredConfig;
+    return this.filteredConfig.dates;
   }
 
   /**
-   * Get config3DTiles given an index of filtered config (by hour, day or month).
+   * Get config given an index of filtered config (by hour, day or month).
    *
    * @param {number} configIndex - Config index wanted by MyApplication.
-   * @returns {object} Config corresponding to the given config index.
+   * @returns {object} Dates corresponding to the given config index.
    */
   getConfigAt(configIndex) {
     return this.getCurrentConfig()[configIndex];
@@ -60,8 +60,8 @@ export class SunlightController {
    */
   getFiltersName() {
     const days = new Set();
-    this.config3DTiles.forEach((element) => {
-      const date = Time.extractDateAndHours(element.url);
+    this.sunlightConfig.dates.forEach((element) => {
+      const date = Time.extractDateAndHours(element);
       if (!date) {
         return;
       }
@@ -74,18 +74,18 @@ export class SunlightController {
   }
 
   /**
-   * Apply filters on config3DTiles based on filter index.
+   * Apply filters on sunlightConfig based on filter index.
    *
    * @param {number} filterIndex - The filterIndex parameter is the index of the filter that you want to apply.
-   * It is used to determine which filter to apply from the list of available 3DTiles.
+   * It is used to determine which filter to apply from the list of available dates.
    */
   applyFilter(filterIndex) {
-    this.filteredConfig = [];
+    const dates = [];
     const dayFilter = this.getFiltersName()[filterIndex];
 
     // Filter config if the date is the same as the filter
-    this.config3DTiles.forEach((element) => {
-      const date = Time.extractDateAndHours(element.url);
+    this.sunlightConfig.dates.forEach((element) => {
+      const date = Time.extractDateAndHours(element);
       if (!date) {
         return;
       }
@@ -95,12 +95,14 @@ export class SunlightController {
         return;
       }
 
-      this.filteredConfig.push(element);
+      dates.push(element);
     });
+
+    this.filteredConfig.dates = dates;
   }
 
   /**
-   * The function `getDisplayedDates` extracts dates from URLs in `config3DTiles` and formats them for
+   * The function `getDisplayedDates` extracts dates from URLs in `sunlightConfig` and formats them for
    * display.
    *
    * @returns {Array.<string>} an array of formatted dates.
@@ -110,7 +112,7 @@ export class SunlightController {
 
     this.getCurrentConfig().forEach((element) => {
       // Check if we can use the date in url
-      const date = Time.extractDateAndHours(element.url);
+      const date = Time.extractDateAndHours(element);
       if (!date) {
         return;
       }

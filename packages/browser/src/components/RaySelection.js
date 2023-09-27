@@ -1,5 +1,5 @@
 import { Widget, itowns, Frame3DPlanar } from '@ud-viz/browser';
-import { getFeatureByOccultingId } from '../utils/Utils';
+import { getFeatureBySunlightId } from '../utils/Utils';
 
 /* The `Selection` class represents a selection widget for displaying 3DTiles batch table information 
 and allows the user to select features. */
@@ -71,7 +71,7 @@ export class RaySelection {
 
         // Change occulting feature state to display information about it
         if (!featureClicked.getInfo().batchTable.bLighted) {
-          this.currentSelection.occultingFeature = getFeatureByOccultingId(
+          this.currentSelection.occultingFeature = getFeatureBySunlightId(
             this.currentSelection.layer,
             this.currentSelection.feature.getInfo().batchTable.occultingId
           );
