@@ -131,26 +131,30 @@ export class MyApplication {
    * Replace 3D Tiles batch table after the date changed.
    *
    * @param {object} sunlightConfig - An object containing configs
+   * @param tileIndex
    */
-  replaceBatchTable(sunlightConfig) {
-    FileUtil.loadMultipleJSON([
-      '../assets/Hotel-Police/2016-01-01__0800/0.json',
-    ]).then((tiles) => {
+  replaceBatchTable(sunlightConfig, tileIndex = 0) {
+    // Construct path containing sunlight result for a given timestamps and tileIndex
+    const tile_path =
+      this.sunlightConfig.root_path +
+      '/' +
+      sunlightConfig +
+      '/' +
+      tileIndex +
+      '.json';
+
+    FileUtil.loadJSON(tile_path).then((batchTable) => {
       // Get geometry layer currently displayed
       const layer = this.getGeometryLayer();
 
-      for (const tileIndex in tiles) {
-        const batchTable = tiles[tileIndex];
+      for (const featureId in batchTable) {
+        // Get current feature associated to the batch table
+        const result = batchTable[featureId];
+        const feature = getFeatureBySunlightId(layer, featureId);
 
-        for (const featureId in batchTable) {
-          // Get current feature associated to the batch table
-          const result = batchTable[featureId];
-          const feature = getFeatureBySunlightId(layer, featureId);
-
-          // Replace batch table with new content
-          for (const key in result) {
-            feature.getInfo().batchTable[key] = result[key];
-          }
+        // Replace batch table with new content
+        for (const key in result) {
+          feature.getInfo().batchTable[key] = result[key];
         }
       }
 
@@ -309,7 +313,7 @@ export class MyApplication {
     this.timeline.radioContainer.addEventListener('onselect', (event) => {
       this.raySelection.resetSelection();
       const newConfig = this.currentController.getConfigAt(event.detail);
-      this.replaceBatchTable([newConfig]);
+      this.replaceBatchTable(newConfig);
     });
 
     // Switch view
