@@ -3,8 +3,8 @@ import { Time, TimeScales } from '../utils/Time';
 
 /* Controller to precompute aggegate in 3DTiles by hour, day or month  */
 export class AggregateController extends SunlightController {
-  constructor(config3DTiles) {
-    super(config3DTiles);
+  constructor(sunlightConfig) {
+    super(sunlightConfig);
 
     this.switchScale(TimeScales.Month);
   }
@@ -31,36 +31,40 @@ export class AggregateController extends SunlightController {
   }
 
   /**
-   * Filter `config3DTiles` array to get only one 3DTiles by day.
+   * Filter `sunlightConfig` array to get only one 3DTiles by day.
    *
-   * @returns {object} an array of config3DTiles containing all aggregate.
+   * @returns {object} an array of dates containing all aggregate.
    */
   filterConfigByDays() {
     const registeredDates = [];
-    const output = [];
-    this.config3DTiles.forEach((element) => {
+    const dates = [];
+
+    this.sunlightConfig.dates.forEach((element) => {
       // Day already registered
-      const currentDate = Time.extractDateAndHours(element.url);
+      const currentDate = Time.extractDateAndHours(element);
       if (!currentDate || registeredDates.includes(currentDate.getDate())) {
         return;
       }
       registeredDates.push(currentDate.getDate());
-      output.push(element);
+      dates.push(element);
     });
+
+    const output = this.sunlightConfig;
+    output.dates = dates;
 
     return output;
   }
 
   /**
-   * Filter `config3DTiles` array to get only one 3DTiles by month.
+   * Filter `sunlightConfig` array to get only one 3DTiles by month.
    *
-   * @returns {object} an array of config3DTiles containing all aggregate.
+   * @returns {object} an array of dates containing all aggregate.
    */
   filterConfigByMonths() {
     const registeredDates = [];
-    const output = [];
+    const dates = [];
 
-    this.config3DTiles.forEach((element) => {
+    this.sunlightConfig.dates.forEach((element) => {
       // Month already registered
       const currentDate = Time.extractDateAndHours(element.url);
       if (!currentDate || registeredDates.includes(currentDate.getMonth())) {
@@ -68,8 +72,11 @@ export class AggregateController extends SunlightController {
       }
 
       registeredDates.push(currentDate.getMonth());
-      output.push(element);
+      dates.push(element);
     });
+
+    const output = this.sunlightConfig;
+    output.dates = dates;
 
     return output;
   }

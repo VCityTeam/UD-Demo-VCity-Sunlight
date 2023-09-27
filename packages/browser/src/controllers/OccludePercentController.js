@@ -4,8 +4,8 @@ import { TimeScales } from '../utils/Time';
 
 /* Aggregate Controller responsible of occludePercent aggregate */
 export class OccludePercentController extends AggregateController {
-  constructor(config3DTiles) {
-    super(config3DTiles);
+  constructor(sunlightConfig) {
+    super(sunlightConfig);
   }
 
   getTitle() {
