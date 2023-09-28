@@ -21,7 +21,7 @@ export function getFeatureBySunlightId(layer, sunlightId) {
   // Extract the number before "b3dm"
   let tileIndex = sunlightId.match(/(\d+)\.b3dm/);
   // +1 because itowns tiles start at 1
-  tileIndex = parseInt(tileIndex[1] + 1);
+  tileIndex = parseInt(tileIndex[1]) + 1;
 
   // Extract the last number in the string
   let featureId = sunlightId.match(/(\d+)$/);
