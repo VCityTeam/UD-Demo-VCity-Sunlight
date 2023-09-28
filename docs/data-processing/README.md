@@ -2,6 +2,8 @@
 
 This documentation explains how to create Sunlight 3D Tiles for Demo-Sunlight and how to configure Demo-Sunlight to display them.
 
+Note : For Demo-Sunlight, we use 3D Tiles of [Tour-Crayon](https://partage.liris.cnrs.fr/index.php/s/PMp2b5SMxeEjKxk) at Lyon 3. We will explain the full process with Lyon 1, because it's already on the cnrs server.
+
 ## How to create 3D Tiles Sunlight from 3D Tiles
 
 All steps are present in a [small bash script](compute-sunlight.sh).
